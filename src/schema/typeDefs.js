@@ -2,7 +2,9 @@ const { gql } = require("apollo-server");
 
 const typeDefs = gql`
   scalar Date
-  union DataObject =  Organization | Location | Event
+
+  # this is not working at the moment
+  union DataObject = Organization | Location | Event
 
   type Organization {
     id: ID!
@@ -26,7 +28,7 @@ const typeDefs = gql`
   }
 
   type Event {
-    name: String
+    name: String!
     dateAndTime: String!
     description: String!
     createdAt: Date!
@@ -34,6 +36,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    allOrganizations: [Organization]
     organization(id: ID!): Organization
     location(id: ID!): Location
     event(id: ID!): Event

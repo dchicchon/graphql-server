@@ -15,6 +15,8 @@ const resolvers = {
       dataSources.api.getLocations({ ids }),
     events: async (_, { ids }, { dataSources }) =>
       dataSources.api.getEvents({ ids }),
+    allOrganizations: async (_, __ , { dataSources }) =>
+      dataSources.api.getAllOrganizations(),
   },
   Mutation: {
     createOrganization: async (_, { name }, { dataSources }) => {

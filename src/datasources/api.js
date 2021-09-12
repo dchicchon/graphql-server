@@ -81,6 +81,11 @@ class API extends DataSource {
     return Promise.all(ids.map((id) => this.getEvent({ id })));
   }
 
+  async getAllOrganizations() {
+    const organizations = await this.store.organization.findAll();
+    return organizations;
+  }
+
   async getAllLocationsByOrgId({ id }) {
     const locations = await this.location.findAll({
       where: {
@@ -97,6 +102,7 @@ class API extends DataSource {
     });
     return events;
   }
+
   // END READ
 
   // UPDATE
