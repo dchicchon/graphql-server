@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports.createStore = () => {
   const db = new Sequelize({
-    // logging: false,
+    logging: false,
     dialect: "sqlite",
     storage: "./storage.sqlite",
   });

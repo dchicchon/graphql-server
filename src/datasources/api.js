@@ -28,7 +28,7 @@ class API extends DataSource {
       r = await client.geocode({
         params: {
           address: address,
-          key: 'AIzaSyCuYKn_98OwaiuVoEoewx603vCtzGZbHck'
+          key: process.env.GOOGLE_MAPS_API_KEY
         },
         timeout: 3000 // milliseconds
       })
@@ -145,7 +145,7 @@ class API extends DataSource {
         r = await client.geocode({
           params: {
             address: address,
-            key: 'AIzaSyCuYKn_98OwaiuVoEoewx603vCtzGZbHck'
+            key: process.env.GOOGLE_MAPS_API_KEY
           },
           timeout: 3000 // milliseconds
         })
