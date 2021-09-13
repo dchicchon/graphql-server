@@ -11,6 +11,7 @@ const typeDefs = gql`
   """Response from Read Call that can be a Organization, Location, Event, or ErrorObject and will display success status"""
   type Response {
     success: Boolean!
+    """Result of creating an item in the database"""
     results: DataObject
   }
 
