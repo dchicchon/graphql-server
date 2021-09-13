@@ -7,6 +7,9 @@ This is a graphql-server that hosts a sqlite database of organizations, location
 ## Development
 This server is created using [Apollo](https://www.apollographql.com/) which offers quick scaffolding of GraphQL servers that can run in a variety of development environments.
 
+This project was also developed using [Node.js](https://nodejs.org/en/). `Please ensure that you have the latest
+version of Node.js installed before running this project`.
+
 ## Run
 To run this project, run the following command in the console
 ```console
@@ -76,10 +79,12 @@ Finally, in the Apollo console you can submit a date and time link this
 ## Creating a Location
 In order to create a location , you must enter a valid address so the [Google Maps API](https://developers.google.com/maps/documentation/geocoding/overview) can get the `latitude` and `longitude` coordinates of the entered address.
 
-Here is Google's instructions to input a valid address
-```
-Specify addresses in accordance with the format used by the national postal service of the country concerned. Additional address elements such as business names and unit, suite or floor numbers should be avoided. Street address elements should be delimited by spaces (shown here as url-escaped to %20):
-```
+Here is Google's instructions to input a valid address:
+
+>Specify addresses in accordance with the format used by the national postal service of the country concerned.
+Additional address elements such as business names and unit, suite or floor numbers should be avoided. 
+Street address elements should be delimited by spaces
+
 
 Following the statment above, an example address for the United States would look like this
 ```json
