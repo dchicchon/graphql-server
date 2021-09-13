@@ -65,16 +65,31 @@ const typeDefs = gql`
     allLocations: [Location]
     """Gets all events"""
     allEvents: [Event]
+
+    """Gets an organization"""
     organization("An organization id" id: ID!): Organization
+
+    """Gets a location"""
     location("A location id" id: ID!): Location
+
+    """Gets an event"""
     event("An event id" id: ID!): Event
+
+    """Gets a list of organizations"""
     organizations("A list of organization ids" ids: [ID!]): [Organization]
+
+    """Gets a list of locations"""
     locations("A list of location ids" ids: [ID!]): [Location]
+
+    """Gets a list of events"""
     events("A list of event ids" ids: [ID!]): [Event]
   }
 
   type Mutation {
+    """Creates an organization"""
     createOrganization("A new organization name"name: String!): Response!
+
+    """Creates a location"""
     createLocation(
       "A location name"
       name: String!
@@ -83,6 +98,8 @@ const typeDefs = gql`
       "An organization id"
       organizationId: ID!
     ): Response!
+
+    """Creates an event"""
     createEvent(
       "An event name"
       name: String!
@@ -93,11 +110,15 @@ const typeDefs = gql`
       "An organization id"
       organizationId: ID!
     ): Response!
+
+    """Updates an organization"""
     updateOrganization(
       "Organization id to update" 
       id: ID!, 
       "A new Organization name" 
       name: String!): Response!
+
+    """Updates a location"""
     updateLocation(
       "Organization id to update" 
       id: ID!, 
@@ -105,6 +126,8 @@ const typeDefs = gql`
       name: String,  
       "A new address"
       address: String): Response!
+
+    """Updates an event"""
     updateEvent(
       "Organization id to update"
       id: ID!, 
@@ -114,8 +137,14 @@ const typeDefs = gql`
       dateAndTime: Date, 
       "A new description"
       description: String): Response!
+
+    """Deletes an organization"""
     deleteOrganization("Organization id to delete"id: ID!): Response! 
+
+    """Deletes a location"""
     deleteLocation("Organization id to delete"id: ID!): Response!
+
+    """Deletes an event"""
     deleteEvent("Organization id to delete"id: ID!): Response!
   }
 
