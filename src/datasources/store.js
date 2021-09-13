@@ -65,6 +65,6 @@ module.exports.createStore = () => {
   });
 
   db.authenticate();
-  db.sync();
+  db.sync(); // sync the models with our databse
   return { db, organization, location, event };
 };
