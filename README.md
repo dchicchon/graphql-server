@@ -50,7 +50,7 @@ Event = {
 ```
 
 ## Creating an Event
-In order to create an event you must create a JSON readable timestring or get the milliseconds which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) in order to learn more but essentially we will get this:
+In order to create an event you must create a JSON readable timestring or get the milliseconds which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) to learn more but essentially we will get this:
 ```js
 const event = new Date();
 
