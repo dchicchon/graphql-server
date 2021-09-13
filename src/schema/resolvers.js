@@ -15,13 +15,14 @@ const resolvers = {
       dataSources.api.getLocations({ ids }),
     events: async (_, { ids }, { dataSources }) =>
       dataSources.api.getEvents({ ids }),
-    allOrganizations: async (_, __ , { dataSources }) =>
+    allOrganizations: async (_, __, { dataSources }) =>
       dataSources.api.getAllOrganizations(),
+    allLocations: async (_, __, { dataSources }) => dataSources.api.getAllLocations(),
+    allEvents: async (_, __, { dataSources }) => dataSources.api.getAllEvents()
   },
   Mutation: {
     createOrganization: async (_, { name }, { dataSources }) => {
       const results = await dataSources.api.createOrganization({ name });
-      console.log(results);
       return {
         success: results && results.id,
         results,
@@ -46,12 +47,13 @@ const resolvers = {
     },
     createEvent: async (
       _,
-      { name, dateAndTime, description, organizationId },
+      { name, time, date, description, organizationId },
       { dataSources }
     ) => {
       const results = await dataSources.api.createEvent({
         name,
-        dateAndTime,
+        date,
+        time,
         description,
         organizationId,
       });
@@ -61,58 +63,71 @@ const resolvers = {
       };
     },
 
-    updateOrganization: async ({ id }) => {
-      const results = dataSources.api.updateOrganization({ id });
+    updateOrganization: async (_, { id, name }, { dataSources }) => {
+      const results = dataSources.api.updateOrganization({ id, name });
       return {
-        success: results && results.id,
-        results,
+        success: results && results,
       };
     },
-    updateLocation: async ({ id }) => {
-      const reuslts = dataSources.api.updateLocation({ id });
+    updateLocation: async (_, { id, name, address, latitude, longitude }, { dataSources }) => {
+      const results = dataSources.api.updateLocation({ id, name, address, latitude, longitude });
       return {
         success: results && results.id,
-        results,
       };
     },
-    updateEvent: async ({ id }) => {
-      const results = dataSources.api.updateEvent({ id });
+    updateEvent: async (_, { id, name, date, time, description }, { dataSources }) => {
+      const results = dataSources.api.updateEvent({ id, name, date, time, description });
       return {
         success: results && results.id,
-        results,
       };
     },
-
-    deleteOrganization: async ({ id }) => {
-      const results = dataSources.api.deleteOrganization({ id });
+    deleteOrganization: async (_, { id }, { dataSources }) => {
+      const results = await dataSources.api.deleteOrganization({ id });
       return {
-        success: results && results.id,
-        results,
+        success: results && results
       };
     },
-    deleteLocation: async ({ id }) => {
-      const results = dataSources.api.deleteLocation({ id });
+    deleteLocation: async (_, { id }, { dataSources }) => {
+      const results = await dataSources.api.deleteLocation({ id });
       return {
-        success: results && results.id,
-        results,
+        success: results && results
       };
     },
-    deleteEvent: async ({ id }) => {
-      const results = dataSources.api.deleteEvent({ id });
+    deleteEvent: async (_, { id }, { dataSources }) => {
+      const results = await dataSources.api.deleteEvent({ id });
       return {
-        success: results && results.id,
-        results,
+        success: results && results
       };
     },
   },
   Organization: {
-    locations(parent) {
+    locations: async ({ id }, _, { dataSources }) => {
+      console.log("Getting Locations")
       // parent is going to be the parent typeDef that was called
-      return dataSources.api.getAllLocationsByOrgId(parent.id);
+      return dataSources.api.getAllLocationsByOrgId({ id });
     },
-    events(parent) {
-      return dataSources.api.getAllEventsByOrgId(parent.id);
+    events: async ({ id }, _, { dataSources }) => {
+      return dataSources.api.getAllEventsByOrgId({ id });
     },
+  },
+  Location: {
+    organization: async ({ organizationId }, _, { dataSources }) =>
+      dataSources.api.getOrganization({ id: organizationId })
+
+  },
+  Event: {
+    organization: async ({ organizationId }, _, { dataSources }) =>
+      dataSources.api.getOrganization({ id: organizationId })
+  }
+  ,
+  DataObject: {
+    __resolveType(obj, context, info) {
+      if (obj.description) return 'Event'
+      if (obj.latitude) return 'Location'
+      if (obj.name) return 'Organization'
+      if (obj.failMsg) return 'ErrorObject'
+      return null
+    }
   },
   Date: dateScalar,
 };

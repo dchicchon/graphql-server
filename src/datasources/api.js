@@ -18,14 +18,6 @@ class API extends DataSource {
     return created ? organization.dataValues : false;
   }
   async createLocation({ name, address, latitude, longitude, organizationId }) {
-    console.log("API");
-    console.log(name);
-    console.log(address);
-    // Get latitude and longitude with Google Maps API
-    console.log(latitude);
-    console.log(longitude);
-
-    console.log(organizationId);
     const [location, created] = await this.store.location.findOrCreate({
       where: {
         name,
@@ -37,14 +29,9 @@ class API extends DataSource {
     });
     return created ? location.dataValues : false;
   }
-  async createEvent({ name, dateAndTime, description, organizationId }) {
-    console.log("API");
-    console.log(name);
-    console.log(dateAndTime);
-    console.log(description);
-    console.log(organizationId);
+  async createEvent({ name, date, time, description, organizationId }) {
     const [event, created] = await this.store.event.findOrCreate({
-      where: { name, dateAndTime, description },
+      where: { name, date, time, description, organizationId },
     });
     return created ? event.dataValues : false;
   }
@@ -85,71 +72,89 @@ class API extends DataSource {
     const organizations = await this.store.organization.findAll();
     return organizations;
   }
+  async getAllLocations() {
+    const locations = await this.store.location.findAll();
+    return locations
+  }
+  async getAllEvents() {
+    const events = await this.store.event.findAll();
+    return events
+
+  }
 
   async getAllLocationsByOrgId({ id }) {
-    const locations = await this.location.findAll({
+    console.log("")
+    console.log(id)
+    const locations = await this.store.location.findAll({
       where: {
         organizationId: id,
       },
     });
+    console.log("Got locations for Organization")
+    console.log(locations)
     return locations;
   }
   async getAllEventsByOrgId({ id }) {
-    const events = await this.event.findAll({
+    const events = await this.store.event.findAll({
       where: {
         organizationId: id,
       },
     });
+    console.log("Got events for Organization")
+    console.log(events)
     return events;
   }
 
   // END READ
 
   // UPDATE
-  async updateOrganization({ id, updateObject }) {
-    console.log("API");
-    console.log(id);
-    console.log(updateObject);
-    updateObject.updatedAt = new Date();
-    const organization = await this.store.organization.update(updateObject);
-    return organization;
+  async updateOrganization({ id, name }) {
+    console.log("Update Organization")
+    const results = await this.store.organization.update(
+      { name, updatedAt: new Date() },
+      {
+        where: {
+          id
+        }
+      });
+    console.log(results)
+    return results[0];
   }
-  async updateLocation({ id, updateObject }) {
-    console.log("API");
-    console.log(id);
-    console.log(updateObject);
-    updateObject.updatedAt = new Date();
-    const location = await this.store.location.update(updateObject);
-    return location;
+  async updateLocation({ id, name, address, latitude, longitude }) {
+    const results = await this.store.location.update(
+      {
+        name, address, latitude, longitude, updatedAt: new Date()
+      },
+      {
+        where: { id }
+      });
+    return results;
   }
-  async updateEvent({ id, updateObject }) {
-    console.log("API");
-    console.log(id);
-    console.log(updateObject);
+  async updateEvent({ id, name, date, time, description }) {
     updateObject.updatedAt = new Date();
-    const event = await this.store.event.update(updateObject);
-    return event;
+    const results = await this.store.event.update(
+      {
+        name, date, time, description, updatedAt: new Date()
+      },
+      {
+        where: {
+          id
+        }
+      });
+    return results;
   }
   // END UPDATE
 
   // DELETE
   async deleteOrganization({ id }) {
-    console.log("API");
-    console.log(id);
-    const organization = await this.store.organization.destroy({
-      where: { id },
-    });
+    const organization = await this.store.organization.destroy({ where: { id }, });
     return organization;
   }
   async deleteLocation({ id }) {
-    console.log("API");
-    console.log(id);
     const location = await this.store.location.destroy({ where: { id } });
     return location;
   }
   async deleteEvent({ id }) {
-    console.log("API");
-    console.log(id);
     const event = await this.store.event.destroy({ where: { id } });
     return event;
   }
