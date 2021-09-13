@@ -3,7 +3,6 @@
 ## Summary
 This is a graphql-server that hosts a sqlite database of organizations, locations, and events. 
 
-
 ## Development
 This server is created using [Apollo](https://www.apollographql.com/) which offers quick scaffolding of GraphQL servers that can run in a variety of development environments.
 
