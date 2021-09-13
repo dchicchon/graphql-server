@@ -64,13 +64,6 @@ module.exports.createStore = () => {
     },
   });
 
-  // Look into using this in order to cascade delete
-  // Relationships
-  // organization.hasMany(location)
-  // organization.hasMany(event)
-  // location.hasOne(organization)
-  // event.hasOne(organization)
-
   db.authenticate();
   db.sync();
   return { db, organization, location, event };
