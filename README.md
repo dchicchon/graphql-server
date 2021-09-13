@@ -25,7 +25,7 @@ Organization = {
     updatedAt: Date,
 }
 
-// Locations belong to Organizations
+// Locations belong to an Organization
 Location = {
     name: String
     address: String
@@ -36,7 +36,7 @@ Location = {
     organizationId: Integer,
 }
 
-// Events belong to Organizations
+// Events belong to an Organization
 Event = {
     name: String
     dateAndTime: Date
@@ -48,7 +48,7 @@ Event = {
 ```
 
 ## Creating an Event
-In order to create an event you must create a JSON readable timestring which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) in order to learn more but essentially we will get this:
+In order to create an event you must create a JSON readable timestring or get the milliseconds which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) in order to learn more but essentially we will get this:
 ```js
 const event = new Date();
 
@@ -59,12 +59,16 @@ const event = new Date();
 
 const jsonDate = event.toJSON();
 console.log(jsonDate);
-// our dateAndTime string: 1975-08-19T23:15:30.000Z
+// '2021-09-13T05:04:33.141Z'
+//or
+const milliseconds = event.getTime()
+console.log(milliseconds)
+// 1631509350703
 ```
 
 Finally, in the Apollo console you can submit a date and time link this
 ```json
-"createEventDateAndTime":"1975-08-19T23:15:30.000Z"
+"createEventDateAndTime":"2021-09-13T05:04:33.141Z" or "1631509350703"
 ```
 
 
