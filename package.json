@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.1.16",
     "apollo-datasource": "^3.1.0",
     "apollo-server": "^3.3.0",
     "graphql": "^15.5.3",

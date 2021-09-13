@@ -3,20 +3,13 @@ const { dateScalar } = require("./scalars");
 // Resolver Function Parameters: parent, args, context, info
 const resolvers = {
   Query: {
-    organization: async (_, { id }, { dataSources }) =>
-      dataSources.api.getOrganization({ id }),
-    location: async (_, { id }, { dataSources }) =>
-      dataSources.api.getLocation({ id }),
-    event: async (_, { id }, { dataSources }) =>
-      dataSources.api.getEvent({ id }),
-    organizations: async (_, { ids }, { dataSources }) =>
-      dataSources.api.getOrganizations({ ids }),
-    locations: async (_, { ids }, { dataSources }) =>
-      dataSources.api.getLocations({ ids }),
-    events: async (_, { ids }, { dataSources }) =>
-      dataSources.api.getEvents({ ids }),
-    allOrganizations: async (_, __, { dataSources }) =>
-      dataSources.api.getAllOrganizations(),
+    organization: async (_, { id }, { dataSources }) => dataSources.api.getOrganization({ id }),
+    location: async (_, { id }, { dataSources }) => dataSources.api.getLocation({ id }),
+    event: async (_, { id }, { dataSources }) => dataSources.api.getEvent({ id }),
+    organizations: async (_, { ids }, { dataSources }) => dataSources.api.getOrganizations({ ids }),
+    locations: async (_, { ids }, { dataSources }) => dataSources.api.getLocations({ ids }),
+    events: async (_, { ids }, { dataSources }) => dataSources.api.getEvents({ ids }),
+    allOrganizations: async (_, __, { dataSources }) => dataSources.api.getAllOrganizations(),
     allLocations: async (_, __, { dataSources }) => dataSources.api.getAllLocations(),
     allEvents: async (_, __, { dataSources }) => dataSources.api.getAllEvents()
   },
@@ -28,11 +21,7 @@ const resolvers = {
         results,
       };
     },
-    createLocation: async (
-      _,
-      { name, address, latitude, longitude, organizationId },
-      { dataSources }
-    ) => {
+    createLocation: async (_, { name, address, latitude, longitude, organizationId }, { dataSources }) => {
       const results = await dataSources.api.createLocation({
         name,
         address,
@@ -45,11 +34,7 @@ const resolvers = {
         results,
       };
     },
-    createEvent: async (
-      _,
-      { name, time, date, description, organizationId },
-      { dataSources }
-    ) => {
+    createEvent: async (_, { name, time, date, description, organizationId }, { dataSources }) => {
       const results = await dataSources.api.createEvent({
         name,
         date,
@@ -62,23 +47,24 @@ const resolvers = {
         results,
       };
     },
-
     updateOrganization: async (_, { id, name }, { dataSources }) => {
       const results = dataSources.api.updateOrganization({ id, name });
       return {
         success: results && results,
       };
     },
-    updateLocation: async (_, { id, name, address, latitude, longitude }, { dataSources }) => {
-      const results = dataSources.api.updateLocation({ id, name, address, latitude, longitude });
+    updateLocation: async (_, { id, name, address }, { dataSources }) => {
+      
+      const results = await dataSources.api.updateLocation({ id, name, address });
+      if (results.message) return results
       return {
-        success: results && results.id,
+        success: results && results,
       };
     },
     updateEvent: async (_, { id, name, date, time, description }, { dataSources }) => {
       const results = dataSources.api.updateEvent({ id, name, date, time, description });
       return {
-        success: results && results.id,
+        success: results && results,
       };
     },
     deleteOrganization: async (_, { id }, { dataSources }) => {
@@ -101,23 +87,15 @@ const resolvers = {
     },
   },
   Organization: {
-    locations: async ({ id }, _, { dataSources }) => {
-      console.log("Getting Locations")
-      // parent is going to be the parent typeDef that was called
-      return dataSources.api.getAllLocationsByOrgId({ id });
-    },
-    events: async ({ id }, _, { dataSources }) => {
-      return dataSources.api.getAllEventsByOrgId({ id });
-    },
+    locations: async ({ id }, _, { dataSources }) => dataSources.api.getAllLocationsByOrgId({ id }),
+    events: async ({ id }, _, { dataSources }) => dataSources.api.getAllEventsByOrgId({ id })
   },
   Location: {
-    organization: async ({ organizationId }, _, { dataSources }) =>
-      dataSources.api.getOrganization({ id: organizationId })
+    organization: async ({ organizationId }, _, { dataSources }) => dataSources.api.getOrganization({ id: organizationId })
 
   },
   Event: {
-    organization: async ({ organizationId }, _, { dataSources }) =>
-      dataSources.api.getOrganization({ id: organizationId })
+    organization: async ({ organizationId }, _, { dataSources }) => dataSources.api.getOrganization({ id: organizationId })
   }
   ,
   DataObject: {
@@ -125,8 +103,8 @@ const resolvers = {
       if (obj.description) return 'Event'
       if (obj.latitude) return 'Location'
       if (obj.name) return 'Organization'
-      if (obj.failMsg) return 'ErrorObject'
-      return null
+      if (obj.message) return 'ErrorObject'
+      return null // returns graphql error
     }
   },
   Date: dateScalar,

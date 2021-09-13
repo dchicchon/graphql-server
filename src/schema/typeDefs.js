@@ -1,10 +1,17 @@
 const { gql } = require("apollo-server");
 
 const typeDefs = gql`
+
+  # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
 
   # this is not working at the moment
   union DataObject = Organization | Location | Event | ErrorObject
+
+  type Response {
+    success: Boolean!
+    results: DataObject
+  }
 
   type Organization {
     id: ID!
@@ -15,10 +22,8 @@ const typeDefs = gql`
     events: [Event]
   }
 
-  # Scalar date. Need to add resolver mapper later on
-  # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
-
   type Location {
+    id: ID!
     name: String!
     address: String!
     latitude: String!
@@ -30,6 +35,7 @@ const typeDefs = gql`
   }
 
   type Event {
+    id: ID!
     name: String!
     date: String!
     time: String!
@@ -38,6 +44,10 @@ const typeDefs = gql`
     updatedAt: Date!
     organizationId: ID!
     organization: Organization!
+  }
+
+  type ErrorObject {
+    message: String!
   }
 
   type Query {
@@ -57,8 +67,6 @@ const typeDefs = gql`
     createLocation(
       name: String!
       address: String!
-      latitude: String!
-      longitude: String!
       organizationId: ID!
     ): Response!
     createEvent(
@@ -74,14 +82,6 @@ const typeDefs = gql`
     deleteOrganization(id: ID!): Response! # if delete organization, I should probably delete locations and events too
     deleteLocation(id: ID!): Response!
     deleteEvent(id: ID!): Response!
-  }
-  type Response {
-    success: Boolean!
-    results: DataObject
-  }
-
-  type ErrorObject {
-    type: Boolean
   }
 
 `;

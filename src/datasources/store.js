@@ -30,8 +30,8 @@ module.exports.createStore = () => {
   const location = db.define("location", {
     name: { type: DataTypes.STRING, allowNull: false },
     address: { type: DataTypes.STRING, allowNull: false },
-    latitude: { type: DataTypes.STRING, allowNull: false },
-    longitude: { type: DataTypes.STRING, allowNull: false },
+    latitude: { type: DataTypes.FLOAT, allowNull: false },
+    longitude: { type: DataTypes.FLOAT, allowNull: false },
     createdAt: { type: DataTypes.DATE, defaultValue: new Date(), allowNull: false, },
     updatedAt: { type: DataTypes.DATE, defaultValue: new Date(), allowNull: false },
     organizationId: { type: DataTypes.INTEGER },

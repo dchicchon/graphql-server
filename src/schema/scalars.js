@@ -4,8 +4,6 @@ module.exports.dateScalar = new GraphQLScalarType({
     name: 'Date',
     description: 'Date custom scalar type',
     serialize(value) {
-        console.log("Serialize")
-        console.log(value)
         return value.getTime(); // Convert outgoing Date to integer for JSON
     },
     parseValue(value) {
