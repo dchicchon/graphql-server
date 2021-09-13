@@ -71,10 +71,6 @@ class API extends DataSource {
     return organization
   }
   async getLocation({ id }) {
-
-
-
-
     const location = await this.store.location.findOne({ where: { id } });
     console.log(location);
     return location;

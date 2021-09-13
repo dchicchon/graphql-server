@@ -50,7 +50,13 @@ Event = {
 ## Creating an Event
 In order to create an event you must create a JSON readable timestring which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) in order to learn more but essentially we will get this:
 ```js
-const event = new Date('August 19, 1975 23:15:30 UTC');
+const event = new Date();
+
+// you can change the event date like this
+// event.setDate(25)
+// event.setMonth(10)
+// event.setHours(20)
+
 const jsonDate = event.toJSON();
 console.log(jsonDate);
 // our dateAndTime string: 1975-08-19T23:15:30.000Z
