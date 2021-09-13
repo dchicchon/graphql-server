@@ -37,8 +37,7 @@ const typeDefs = gql`
   type Event {
     id: ID!
     name: String!
-    date: String!
-    time: String!
+    dateAndTime: Date!
     description: String!
     createdAt: Date!
     updatedAt: Date!
@@ -71,14 +70,13 @@ const typeDefs = gql`
     ): Response!
     createEvent(
       name: String!
-      date: String!
-      time: String!
+      dateAndTime: Date!
       description: String!
       organizationId: ID!
     ): Response!
     updateOrganization(id: ID!, name: String!): Response!
-    updateLocation(id: ID!, name: String, address: String, latitude: String, longitude: String): Response!
-    updateEvent(id: ID!, name: String, date: String, time: String, description: String): Response!
+    updateLocation(id: ID!, name: String, address: String): Response!
+    updateEvent(id: ID!, name: String, dateAndTime: Date, description: String): Response!
     deleteOrganization(id: ID!): Response! # if delete organization, I should probably delete locations and events too
     deleteLocation(id: ID!): Response!
     deleteEvent(id: ID!): Response!

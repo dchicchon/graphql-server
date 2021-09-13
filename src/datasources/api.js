@@ -20,13 +20,12 @@ class API extends DataSource {
     return created ? organization.dataValues : { message: "Organization Already Created" };
   }
   async createLocation({ name, address, organizationId }) {
-
     // At this point in the code, I should be using Google Maps API to check if the 
     // address provided is a valid address that can be called upon
     const client = new Client()
     let r;
     try {
-      r = client.geocode({
+      r = await client.geocode({
         params: {
           address: address,
           key: 'AIzaSyCuYKn_98OwaiuVoEoewx603vCtzGZbHck'
@@ -40,7 +39,7 @@ class API extends DataSource {
         return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
       }
       let { lat, lng } = r.data.results[0].geometry.location
-      const [location, created] = this.store.location.findOrCreate({
+      const [location, created] = await this.store.location.findOrCreate({
         where: {
           name,
           address,
@@ -52,11 +51,11 @@ class API extends DataSource {
       return created ? location.dataValues : { message: "Location Already Created" }
     }
 
-
   }
-  async createEvent({ name, date, time, description, organizationId }) {
+  async createEvent({ name, dateAndTime, description, organizationId }) {
+
     const [event, created] = await this.store.event.findOrCreate({
-      where: { name, date, time, description, organizationId },
+      where: { name, dateAndTime: new Date(dateAndTime), description, organizationId },
     });
     return created ? event.dataValues : { message: "Event already created" };
   }
@@ -190,11 +189,10 @@ class API extends DataSource {
 
 
   }
-  async updateEvent({ id, name, date, time, description }) {
-    updateObject.updatedAt = new Date();
+  async updateEvent({ id, name, dateAndTime, description }) {
     const results = await this.store.event.update(
       {
-        name, date, time, description, updatedAt: new Date()
+        name, dateAndTime: new Date(dateAndTime), description, updatedAt: new Date()
       },
       {
         where: {
@@ -204,7 +202,6 @@ class API extends DataSource {
     return results[0];
   }
   // END UPDATE
-
   // =========================
   // DELETE
   // =========================

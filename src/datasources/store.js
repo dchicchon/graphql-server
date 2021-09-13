@@ -42,12 +42,8 @@ module.exports.createStore = () => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    time: {
-      type: DataTypes.STRING,
+    dateAndTime: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
     description: {

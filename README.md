@@ -1,1 +1,77 @@
-# graphql-server
+# GraphQL-Server
+
+## Summary
+This is a graphql-server that hosts a sqlite database of organizations, locations, and events. 
+
+
+## Development
+This server is created using [Apollo](https://www.apollographql.com/) which offers quick scaffolding of GraphQL servers that can run in a variety of development environments.
+
+## Run
+To run this project, run the following command in the console
+```console
+npm install && npm start
+```
+
+Once run, visit the url [http://localhost:4000](http://localhost:4000) to begin querying and mutating the database.
+
+## Data Structure
+The structure of each of the Data Models is designed as seen below. Each of these structures are then reflected in the `typeDefs` of Graphql.
+```js
+// An organization can have many Locations and Events
+Organization = {
+    name: String
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+// Locations belong to Organizations
+Location = {
+    name: String
+    address: String
+    latitude: Float
+    longitude: Float
+    createdAt: Date,
+    updatedAt: Date,
+    organizationId: Integer,
+}
+
+// Events belong to Organizations
+Event = {
+    name: String
+    dateAndTime: Date
+    description: String
+    createdAt: Date
+    updatedAt: Date
+    organizationId: Integer
+}
+```
+
+## Creating an Event
+In order to create an event you must create a JSON readable timestring which you can make easily in the `chrome console`. Check out the link [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) in order to learn more but essentially we will get this:
+```js
+const event = new Date('August 19, 1975 23:15:30 UTC');
+const jsonDate = event.toJSON();
+console.log(jsonDate);
+// our dateAndTime string: 1975-08-19T23:15:30.000Z
+```
+
+Finally, in the Apollo console you can submit a date and time link this
+```json
+"createEventDateAndTime":"1975-08-19T23:15:30.000Z"
+```
+
+
+
+## Creating a Location
+In order to create a location , you must enter a valid address so the [Google Maps API](https://developers.google.com/maps/documentation/geocoding/overview) can get the `latitude` and `longitude` coordinates of the entered address.
+
+Here is Google's instructions to input a valid address
+```
+Specify addresses in accordance with the format used by the national postal service of the country concerned. Additional address elements such as business names and unit, suite or floor numbers should be avoided. Street address elements should be delimited by spaces (shown here as url-escaped to %20):
+```
+
+Following the statment above, an example address for the United States would look like this
+```json
+    "createLocationAddress": "111 8th Ave, New York, NY 10011" 
+```

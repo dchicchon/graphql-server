@@ -1,4 +1,4 @@
-const { dateScalar } = require("./scalars");
+const { dateScalar} = require("./scalars");
 
 // Resolver Function Parameters: parent, args, context, info
 const resolvers = {
@@ -16,34 +16,50 @@ const resolvers = {
   Mutation: {
     createOrganization: async (_, { name }, { dataSources }) => {
       const results = await dataSources.api.createOrganization({ name });
+      if (results.message) {
+        return {
+          success: false,
+          results
+        }
+      }
       return {
-        success: results && results.id,
+        success: true,
         results,
       };
     },
-    createLocation: async (_, { name, address, latitude, longitude, organizationId }, { dataSources }) => {
+    createLocation: async (_, { name, address, organizationId }, { dataSources }) => {
       const results = await dataSources.api.createLocation({
         name,
         address,
-        latitude,
-        longitude,
         organizationId,
       });
+      console.log(results)
+      if (results.message) {
+        return {
+          success: false,
+          results
+        }
+      }
       return {
-        success: results && results.id,
+        success: true,
         results,
       };
     },
-    createEvent: async (_, { name, time, date, description, organizationId }, { dataSources }) => {
+    createEvent: async (_, { name, dateAndTime, description, organizationId }, { dataSources }) => {
       const results = await dataSources.api.createEvent({
         name,
-        date,
-        time,
+        dateAndTime,
         description,
         organizationId,
       });
+      if (results.message) {
+        return {
+          success: false,
+          results
+        }
+      }
       return {
-        success: results && results.id,
+        success: true,
         results,
       };
     },
@@ -54,15 +70,15 @@ const resolvers = {
       };
     },
     updateLocation: async (_, { id, name, address }, { dataSources }) => {
-      
+
       const results = await dataSources.api.updateLocation({ id, name, address });
       if (results.message) return results
       return {
         success: results && results,
       };
     },
-    updateEvent: async (_, { id, name, date, time, description }, { dataSources }) => {
-      const results = dataSources.api.updateEvent({ id, name, date, time, description });
+    updateEvent: async (_, { id, name, dateAndTime, description }, { dataSources }) => {
+      const results = dataSources.api.updateEvent({ id, name, dateAndTime, description });
       return {
         success: results && results,
       };
