@@ -28,7 +28,19 @@ module.exports.createStore = () => {
   });
 
   const location = db.define("location", {
-    name: { type: DataTypes.STRING, allowNull: false },
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Name Required"
+        },
+        len: {
+          args: [4, 40],
+          msg: "Name length not within range 4-40"
+        }
+      }, allowNull: false
+    },
     address: { type: DataTypes.STRING, allowNull: false },
     latitude: { type: DataTypes.FLOAT, allowNull: false },
     longitude: { type: DataTypes.FLOAT, allowNull: false },
@@ -40,6 +52,16 @@ module.exports.createStore = () => {
   const event = db.define("event", {
     name: {
       type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Name Required"
+        },
+        len: {
+          args: [4, 40],
+          msg: "Name length not within range 4-40"
+        }
+      },
       allowNull: false,
     },
     dateAndTime: {

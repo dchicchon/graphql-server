@@ -4,8 +4,7 @@ const typeDefs = gql`
 
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
-
-  # this is not working at the moment
+  
   union DataObject = Organization | Location | Event | ErrorObject
 
   """Response from Read Call that can be a Organization, Location, Event, or ErrorObject and will display success status"""

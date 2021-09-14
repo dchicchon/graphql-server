@@ -119,8 +119,7 @@ class API extends DataSource {
     });
     return events;
   }
-
-  // END READ
+  // END CREATE
 
   // =========================
   // UPDATE
@@ -218,7 +217,6 @@ class API extends DataSource {
     const event = await this.store.event.destroy({ where: { id } });
     return event;
   }
-
   // END DELETE
 }
 
