@@ -18,13 +18,11 @@ npm install && npm start
 Once run, visit the url [http://localhost:4000](http://localhost:4000) to begin querying and mutating the database.
 
 ## Data Structure
-The structure of each of the Data Models is designed as seen below. Each of these structures are then reflected in the `typeDefs` of Graphql.
+The structure of each of the Data Models is designed as seen below. Each of these structures are then reflected in the `typeDefs` of Graphql. Note: `updatedAt` and `createdAt` are created by default in `Sequelize` definitions but are also typed in `typeDefs`
 ```js
 // An organization can have many Locations and Events
 Organization {
     name: String
-    createdAt: Date,
-    updatedAt: Date,
 }
 
 // Locations belong to an Organization
@@ -33,8 +31,6 @@ Location {
     address: String
     latitude: Float
     longitude: Float
-    createdAt: Date,
-    updatedAt: Date,
     organizationId: Integer,
 }
 
@@ -43,8 +39,6 @@ Event {
     name: String
     dateAndTime: Date
     description: String
-    createdAt: Date
-    updatedAt: Date
     organizationId: Integer
 }
 ```
