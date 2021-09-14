@@ -23,8 +23,6 @@ module.exports.createStore = () => {
       },
       allowNull: false,
     },
-    createdAt: { type: DataTypes.DATE, defaultValue: new Date() },
-    updatedAt: { type: DataTypes.DATE, defaultValue: new Date() },
   });
 
   const location = db.define("location", {
@@ -44,8 +42,6 @@ module.exports.createStore = () => {
     address: { type: DataTypes.STRING, allowNull: false },
     latitude: { type: DataTypes.FLOAT, allowNull: false },
     longitude: { type: DataTypes.FLOAT, allowNull: false },
-    createdAt: { type: DataTypes.DATE, defaultValue: new Date(), allowNull: false, },
-    updatedAt: { type: DataTypes.DATE, defaultValue: new Date(), allowNull: false },
     organizationId: { type: DataTypes.INTEGER },
   });
 
@@ -70,14 +66,6 @@ module.exports.createStore = () => {
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE, defaultValue: new Date(),
-      allowNull: false,
-    },
-    updatedAt: {
-      type: DataTypes.DATE, defaultValue: new Date(),
       allowNull: false,
     },
     organizationId: {

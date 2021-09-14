@@ -93,3 +93,9 @@ Following the statment above, an example address for the United States would loo
     "createLocationAddress": "111 8th Ave, New York, NY 10011" 
 }
 ```
+
+
+### Errors to address
+1. Didn't need to add updatedAt or createdAt fields in sequelize as they are already initialized. [Link](https://sequelize.org/v5/manual/models-definition.html)
+2. updatedAt not updating when update locations are changed
+3. Make sure that if the item is null, that it does not affect the update object

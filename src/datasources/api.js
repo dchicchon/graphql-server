@@ -68,6 +68,8 @@ class API extends DataSource {
     const organization = await this.store.organization.findOne({
       where: { id },
     });
+    console.log("Getting organization")
+    console.log(organization)
     return organization
   }
   async getLocation({ id }) {
@@ -124,10 +126,10 @@ class API extends DataSource {
   // =========================
   // UPDATE
   // =========================
-
+  // Maybe for update I should be accepting an updateObject
   async updateOrganization({ id, name }) {
     const results = await this.store.organization.update(
-      { name, updatedAt: new Date() },
+      { name },
       {
         where: {
           id
@@ -135,9 +137,11 @@ class API extends DataSource {
       });
     return results[0];
   }
-  async updateLocation({ id, name, address }) {
 
+  // For some reason, updated at is not working, should check up on this
+  async updateLocation({ id, name, address }) {
     if (address) {
+      console.log("Getting New latitude and longitude")
       const client = new Client()
       let r
       try {
@@ -156,23 +160,23 @@ class API extends DataSource {
           return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
         }
         let { lat, lng } = r.data.results[0].geometry.location
-        const results = await this.store.location.update({
-          name,
-          address,
-          latitude: lat,
-          longitude: lng,
-          updatedAt: new Date()
-        }, {
+        const updateObject = {}
+        if (name) updateObject.name = name;
+        updateObject.address = address
+        updateObject.latitude = lat
+        updateObject.longitude = lng
+        const results = await this.store.location.update(updateObject, {
           where: {
             id
           }
         });
+        console.log("results")
+        console.log(results)
         return results[0]
       }
     } else {
       const results = await this.store.location.update({
         name,
-        updatedAt: new Date()
       }, {
         where: {
           id
@@ -185,16 +189,19 @@ class API extends DataSource {
 
   }
   async updateEvent({ id, name, dateAndTime, description }) {
-    const results = await this.store.event.update(
-      {
-        name, dateAndTime: new Date(dateAndTime), description, updatedAt: new Date()
-      },
+    console.log('Update Event')
+    const updateObject = {}
+    if (name) updateObject.name = name;
+    if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
+    if (description) updateObject.description = description
+    const results = await this.store.event.update(updateObject,
       {
         where: {
           id
         }
       });
-    return results[0];
+    // Maybe do a quick find event to return 
+    return results[0]
   }
   // END UPDATE
   // =========================
