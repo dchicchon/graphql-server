@@ -1,4 +1,4 @@
-const { dateScalar} = require("./scalars");
+const { dateScalar } = require("./scalars");
 
 // Resolver Function Parameters: parent, args, context, info
 const resolvers = {

@@ -71,7 +71,7 @@ console.log(milliseconds)
 Finally, in the Apollo console you can submit a date and time link this
 ```json
 {
-"createEventDateAndTime":"2021-09-13T05:04:33.141Z" or "1631509350703"
+"createEventDateAndTime":"2021-09-13T05:04:33.141Z" or 1631509350703
 }
 ```
 
@@ -95,7 +95,9 @@ Following the statment above, an example address for the United States would loo
 ```
 
 
-### Errors to address
+### Errors/Unnecessary code to address
 1. Didn't need to add updatedAt or createdAt fields in sequelize as they are already initialized. [Link](https://sequelize.org/v5/manual/models-definition.html)
 2. updatedAt not updating when update locations are changed
 3. Make sure that if the item is null, that it does not affect the update object
+4. Ensure that a valid date is passed into creating/updating an Event
+5. Need to delete all items of organization id! Not by id itself. Before I would delete other organizations items

@@ -62,6 +62,12 @@ module.exports.createStore = () => {
     },
     dateAndTime: {
       type: DataTypes.DATE,
+      validate: {
+        isDate: {
+          msg: "Must be a valid date",
+          args: true
+        }
+      },
       allowNull: false,
     },
     description: {

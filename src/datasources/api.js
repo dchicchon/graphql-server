@@ -53,9 +53,8 @@ class API extends DataSource {
 
   }
   async createEvent({ name, dateAndTime, description, organizationId }) {
-
     const [event, created] = await this.store.event.findOrCreate({
-      where: { name, dateAndTime: new Date(dateAndTime), description, organizationId },
+      where: { name, dateAndTime: dateAndTime, description, organizationId },
     });
     return created ? event.dataValues : { message: "Event already created" };
   }
@@ -207,13 +206,23 @@ class API extends DataSource {
   // =========================
   // DELETE
   // =========================
-  async deleteOrganization({ id }) {
+  async deleteOrganization({ id, }) {
     const organization = await this.store.organization.destroy({ where: { id }, });
-
     // delete all events and locations associated with this organization if they exist
-    await this.deleteLocation({ id })
-    await this.deleteEvent({ id })
+    await this.store.location.destroy({
+      where: {
+        organizationId: id
+      }
+    })
+    await this.store.event.destroy({
+      where: {
+        organizationId: id
+      }
+    })
 
+    // This would delete all locations and events that match the id, not necessarily the organizations events or locations
+    // await this.deleteLocation({ id })
+    // await this.deleteEvent({ id })
     return organization;
   }
   async deleteLocation({ id }) {
