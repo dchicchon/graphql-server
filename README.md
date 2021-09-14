@@ -21,14 +21,14 @@ Once run, visit the url [http://localhost:4000](http://localhost:4000) to begin 
 The structure of each of the Data Models is designed as seen below. Each of these structures are then reflected in the `typeDefs` of Graphql.
 ```js
 // An organization can have many Locations and Events
-Organization = {
+Organization {
     name: String
     createdAt: Date,
     updatedAt: Date,
 }
 
 // Locations belong to an Organization
-Location = {
+Location {
     name: String
     address: String
     latitude: Float
@@ -39,7 +39,7 @@ Location = {
 }
 
 // Events belong to an Organization
-Event = {
+Event {
     name: String
     dateAndTime: Date
     description: String
