@@ -1,11 +1,17 @@
 {
-    "extends": "@tsconfig/node12/tsconfig.json",
     "compilerOptions": {
-        "preserveConstEnums":true,
+        "preserveConstEnums": true,
         "removeComments": true,
-        "outDir": "./server",
-        "rootDir": "./src"
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "es2017",
+        "lib": [
+            "esnext"
+        ],
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "strict": true,
+        "outDir": "./build",
     },
-    "include": ["src"],
-    "exclude": ["node_modules"]
+    "include": ["./src/**/*"],
 }

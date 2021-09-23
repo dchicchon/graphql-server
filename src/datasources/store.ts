@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize'
 
-module.exports.createStore = () => {
+const createStore = () => {
   const db = new Sequelize({
     logging: false,
     dialect: "sqlite",
@@ -83,4 +83,6 @@ module.exports.createStore = () => {
   db.authenticate();
   db.sync(); // sync the models with our databse
   return { db, organization, location, event };
-};
+}
+
+export default createStore

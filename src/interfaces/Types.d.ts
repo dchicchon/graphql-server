@@ -1,3 +1,5 @@
+import API from '../datasources/api'
+
 export interface Arguments {
     id?: number,
     ids?: [number],
@@ -37,4 +39,25 @@ export interface UpdateObject {
     longitude?: number,
     dateAndTime?: Date,
     description?: String,
+}
+
+export interface DataSources {
+    api: API
+}
+
+export interface Context {
+    dataSources: DataSources
+}
+
+export interface Organization {
+    id: number,
+    name: string
+}
+
+export interface Location {
+    id: number
+}
+
+export interface Event {
+    id: number
 }

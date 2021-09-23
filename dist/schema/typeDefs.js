@@ -1,6 +1,8 @@
-import { gql } from 'apollo-server'
-
-const typeDefs = gql`
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.typeDefs = void 0;
+const apollo_server_1 = require("apollo-server");
+exports.typeDefs = (0, apollo_server_1.gql) `
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
   
@@ -148,5 +150,3 @@ const typeDefs = gql`
   }
 
 `;
-
-export default typeDefs

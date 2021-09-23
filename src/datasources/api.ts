@@ -1,7 +1,9 @@
 import { DataSource } from 'apollo-datasource'
 import { Client } from '@googlemaps/google-maps-services-js'
 import { Arguments, Store, UpdateObject } from '../interfaces/Types'
-class API extends DataSource {
+
+
+export default class API extends DataSource {
   store
   constructor(store: Store) {
     super();
@@ -249,4 +251,3 @@ class API extends DataSource {
   // END DELETE
 }
 
-module.exports = API;
