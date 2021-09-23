@@ -1,7 +1,7 @@
 const { gql } = require("apollo-server");
 
-const typeDefs = gql`
-
+export module TypeDefs {
+  export const defs = gql`
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
   
@@ -149,4 +149,7 @@ const typeDefs = gql`
   }
 
 `;
-module.exports = typeDefs;
+}
+
+
+// module.exports = typeDefs;

@@ -1,0 +1,11 @@
+{
+    "extends": "@tsconfig/node12/tsconfig.json",
+    "compilerOptions": {
+        "preserveConstEnums":true,
+        "removeComments": true,
+        "outDir": "./server",
+        "rootDir": "./src"
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+}
