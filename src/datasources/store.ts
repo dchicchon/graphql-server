@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize");
+import { Sequelize, DataTypes } from 'sequelize'
 
 module.exports.createStore = () => {
   const db = new Sequelize({
@@ -13,7 +13,7 @@ module.exports.createStore = () => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          args: true,
+          // args: true,
           msg: "Name Required"
         },
         len: {
@@ -30,7 +30,7 @@ module.exports.createStore = () => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          args: true,
+          // args: true,
           msg: "Name Required"
         },
         len: {
@@ -50,7 +50,7 @@ module.exports.createStore = () => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          args: true,
+          // args: true,
           msg: "Name Required"
         },
         len: {

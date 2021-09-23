@@ -1,8 +1,9 @@
-const { DataSource } = require("apollo-datasource");
-const { Client } = require('@googlemaps/google-maps-services-js')
-
+import { DataSource } from 'apollo-datasource'
+import { Client } from '@googlemaps/google-maps-services-js'
+import { Arguments, Store, UpdateObject } from '../interfaces/Types'
 class API extends DataSource {
-  constructor({ store }) {
+  store
+  constructor(store: Store) {
     super();
     this.store = store;
   }
@@ -10,7 +11,7 @@ class API extends DataSource {
   // =========================
   // CREATE
   // =========================
-  async createOrganization({ name }) {
+  async createOrganization({ name }: Arguments) {
     const [organization, created] = await this.store.organization.findOrCreate({
       where: {
         name,
@@ -19,21 +20,25 @@ class API extends DataSource {
 
     return created ? organization.dataValues : { message: "Organization Already Created" };
   }
-  async createLocation({ name, address, organizationId }) {
+  async createLocation({ name, address, organizationId }: Arguments) {
     // At this point in the code, I should be using Google Maps API to check if the 
     // address provided is a valid address that can be called upon
     const client = new Client()
+    // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator
+    const key: string = process.env.GOOGLE_MAPS_API_KEY! // fix this later somehow
     let r;
     try {
       r = await client.geocode({
         params: {
           address: address,
-          key: process.env.GOOGLE_MAPS_API_KEY
+          key: key
         },
         timeout: 3000 // milliseconds
       })
     } catch (e) {
-      return { message: e.response.data.error_message }
+      console.log(e)
+      return { message: "Error in creating location" }
+      // return { message: e.response.data.error_message }
     } finally {
       if (!r) {
         return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
@@ -52,7 +57,7 @@ class API extends DataSource {
     }
 
   }
-  async createEvent({ name, dateAndTime, description, organizationId }) {
+  async createEvent({ name, dateAndTime, description, organizationId }: Arguments) {
     const [event, created] = await this.store.event.findOrCreate({
       where: { name, dateAndTime: dateAndTime, description, organizationId },
     });
@@ -63,7 +68,7 @@ class API extends DataSource {
   // =========================
   // READ
   // =========================
-  async getOrganization({ id }) {
+  async getOrganization({ id }: Arguments) {
     const organization = await this.store.organization.findOne({
       where: { id },
     });
@@ -71,23 +76,29 @@ class API extends DataSource {
     console.log(organization)
     return organization
   }
-  async getLocation({ id }) {
+  async getLocation({ id }: Arguments) {
     const location = await this.store.location.findOne({ where: { id } });
     console.log(location);
     return location;
   }
-  async getEvent({ id }) {
+  async getEvent({ id }: Arguments) {
     const event = await this.store.event.findOne({ where: { id } });
     return event;
   }
-  async getOrganizations({ ids }) {
-    return Promise.all(ids.map((id) => this.getOrganization({ id })));
+  async getOrganizations({ ids }: Arguments) {
+    if (ids) {
+      return Promise.all(ids.map((id) => this.getOrganization({ id })));
+    }
   }
-  async getLocations({ ids }) {
-    return Promise.all(ids.map((id) => this.getLocation({ id })));
+  async getLocations({ ids }: Arguments) {
+    if (ids) {
+      return Promise.all(ids.map((id) => this.getLocation({ id })));
+    }
   }
-  async getEvents({ ids }) {
-    return Promise.all(ids.map((id) => this.getEvent({ id })));
+  async getEvents({ ids }: Arguments) {
+    if (ids) {
+      return Promise.all(ids.map((id) => this.getEvent({ id })));
+    }
   }
 
   async getAllOrganizations() {
@@ -104,7 +115,7 @@ class API extends DataSource {
 
   }
 
-  async getAllLocationsByOrgId({ id }) {
+  async getAllLocationsByOrgId({ id }: Arguments) {
     const locations = await this.store.location.findAll({
       where: {
         organizationId: id,
@@ -112,7 +123,7 @@ class API extends DataSource {
     });
     return locations;
   }
-  async getAllEventsByOrgId({ id }) {
+  async getAllEventsByOrgId({ id }: Arguments) {
     const events = await this.store.event.findAll({
       where: {
         organizationId: id,
@@ -126,7 +137,7 @@ class API extends DataSource {
   // UPDATE
   // =========================
   // Maybe for update I should be accepting an updateObject
-  async updateOrganization({ id, name }) {
+  async updateOrganization({ id, name }: Arguments) {
     const results = await this.store.organization.update(
       { name },
       {
@@ -138,28 +149,30 @@ class API extends DataSource {
   }
 
   // For some reason, updated at is not working, should check up on this
-  async updateLocation({ id, name, address }) {
+  async updateLocation({ id, name, address }: Arguments) {
     if (address) {
       console.log("Getting New latitude and longitude")
       const client = new Client()
       let r
+      const key: string = process.env.GOOGLE_MAPS_API_KEY!
       try {
         r = await client.geocode({
           params: {
-            address: address,
-            key: process.env.GOOGLE_MAPS_API_KEY
+            address,
+            key
           },
           timeout: 3000 // milliseconds
         })
 
       } catch (e) {
-        return { message: e.response.data.error_message }
+        return { message: "Error in updating location" }
+        // return { message: e.response.data.error_message }
       } finally {
         if (!r) {
           return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
         }
         let { lat, lng } = r.data.results[0].geometry.location
-        const updateObject = {}
+        const updateObject: UpdateObject = {}
         if (name) updateObject.name = name;
         updateObject.address = address
         updateObject.latitude = lat
@@ -187,9 +200,9 @@ class API extends DataSource {
 
 
   }
-  async updateEvent({ id, name, dateAndTime, description }) {
+  async updateEvent({ id, name, dateAndTime, description }: Arguments) {
     console.log('Update Event')
-    const updateObject = {}
+    const updateObject: UpdateObject = {}
     if (name) updateObject.name = name;
     if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
     if (description) updateObject.description = description
@@ -206,7 +219,7 @@ class API extends DataSource {
   // =========================
   // DELETE
   // =========================
-  async deleteOrganization({ id, }) {
+  async deleteOrganization({ id, }: Arguments) {
     const organization = await this.store.organization.destroy({ where: { id }, });
     // delete all events and locations associated with this organization if they exist
     await this.store.location.destroy({
@@ -225,11 +238,11 @@ class API extends DataSource {
     // await this.deleteEvent({ id })
     return organization;
   }
-  async deleteLocation({ id }) {
+  async deleteLocation({ id }: Arguments) {
     const location = await this.store.location.destroy({ where: { id } });
     return location;
   }
-  async deleteEvent({ id }) {
+  async deleteEvent({ id }: Arguments) {
     const event = await this.store.event.destroy({ where: { id } });
     return event;
   }
