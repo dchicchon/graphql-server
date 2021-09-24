@@ -10,11 +10,13 @@ const createOrganization = async (_: any, { name }: Arguments, { dataSources }: 
     const results = await dataSources.api.organization.createOrganization({ name });
     return results;
 }
+
+
 const updateOrganization = async (_: any, { id, name }: Arguments, { dataSources }: DataSourceParent) => {
+    // console.log("Update Org in Resolvers")
     const results = await dataSources.api.organization.updateOrganization({ id, name });
-    return {
-        success: results,
-    };
+    // console.log(results)
+    return results
 }
 
 const deleteOrganization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {

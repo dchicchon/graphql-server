@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloServer } from 'apollo-server'
 import * as Queries from '../testQueries'
 import { resolvers as organizationResolvers } from './organization'
@@ -15,11 +14,16 @@ import Location from '../../datasources/api/location'
 import Event from '../../datasources/api/event'
 import { config } from 'dotenv'
 
+describe("Testing Test Suite", () => {
+    it("Runs a test", async () => {
+        const item = 1;
+        expect(item).toBe(1)
+    })
+})
 
 // Resolvers Test
 describe('resolvers', () => {
     let server: ApolloServer;
-
 
     beforeAll(async () => {
         config()
@@ -211,7 +215,15 @@ describe('resolvers', () => {
     })
 
     it("Updates an Organization", async () => {
-
+        expect.assertions(1)
+        const results = await server.executeOperation({
+            query: Queries.UPDATE_ORGANIZATION,
+            variables: {
+                id: 1,
+                name: "Pola"
+            }
+        })
+        expect(results.errors).toBe(undefined)
     })
 
     // it("Deletes 1st Organization along with all it's Locations and Events", async () => {

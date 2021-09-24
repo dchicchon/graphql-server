@@ -12,11 +12,11 @@ export default class Event {
     // =========================
 
     async createEvent({ name, dateAndTime, description, organizationId }: CreateEventArguments) {
-        console.log("Creating Event")
+        // console.log("Creating Event")
         const [event, created] = await this.event.findOrCreate({
             where: { name, dateAndTime: dateAndTime, description, organizationId },
         });
-        console.log(event)
+        // console.log(event)
         return event.dataValues
         // return created ? event.dataValues : { message: "Event already created" };
     }

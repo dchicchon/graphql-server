@@ -39,14 +39,19 @@ export default class Organization {
     }
 
     async updateOrganization({ id, name }: Arguments) {
-        const results = await this.organization.update(
+        // console.log("Update Org in API")
+        const resultsArray = await this.organization.update(
             { name },
             {
                 where: {
                     id
                 }
             });
-        return results[0];
+        const resultFind = await this.getOrganization({ id: resultsArray[0] })
+        // console.log(resultFind.dataValues)
+        // might have to do a find to grab the organization 
+        // and return it to the user
+        return resultFind.dataValues;
     }
 
 
