@@ -10,6 +10,23 @@ export interface Arguments {
     organizationId?: number,
 }
 
+export interface CreateOrganizationArguments {
+    name: string
+}
+
+export interface CreateLocationArguments {
+    name: string,
+    address: string,
+    organizationId: number
+}
+
+export interface CreateEventArguments {
+    name: string,
+    description: string,
+    dateAndTime: Date,
+    organizationId: number
+}
+
 // DataSrouce is not correct right now.
 export interface DataSourceParent {
     dataSources: any

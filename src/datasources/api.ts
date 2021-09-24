@@ -1,6 +1,7 @@
 import { DataSource } from 'apollo-datasource'
 import { Client } from '@googlemaps/google-maps-services-js'
-import { Arguments, Store, UpdateObject } from '../interfaces/Types'
+import { Arguments, CreateEventArguments, CreateLocationArguments, CreateOrganizationArguments, Store, UpdateObject } from '../interfaces/Types'
+// import { organizations } from '../schema/organization';
 
 
 export default class API extends DataSource {
@@ -13,16 +14,17 @@ export default class API extends DataSource {
   // =========================
   // CREATE
   // =========================
-  async createOrganization({ name }: Arguments) {
+  async createOrganization({ name }: CreateOrganizationArguments) {
     const [organization, created] = await this.store.organization.findOrCreate({
       where: {
         name,
       },
     });
 
-    return created ? organization.dataValues : { message: "Organization Already Created" };
+    return organization.dataValues
+    // return created ? organization.dataValues : { message: "Organization Already Created" };
   }
-  async createLocation({ name, address, organizationId }: Arguments) {
+  async createLocation({ name, address, organizationId }: CreateLocationArguments) {
     // At this point in the code, I should be using Google Maps API to check if the 
     // address provided is a valid address that can be called upon
     const client = new Client()
@@ -55,15 +57,21 @@ export default class API extends DataSource {
           organizationId,
         },
       });
-      return created ? location.dataValues : { message: "Location Already Created" }
+      console.log("Creating Location")
+      console.log(location.dataValues)
+      return location.dataValues
+      // return created ? location.dataValues : { message: "Location Already Created" }
     }
 
   }
-  async createEvent({ name, dateAndTime, description, organizationId }: Arguments) {
+  async createEvent({ name, dateAndTime, description, organizationId }: CreateEventArguments) {
+    console.log("Creating Event")
     const [event, created] = await this.store.event.findOrCreate({
       where: { name, dateAndTime: dateAndTime, description, organizationId },
     });
-    return created ? event.dataValues : { message: "Event already created" };
+    console.log(event.dataValues)
+    return event.dataValues
+    // return created ? event.dataValues : { message: "Event already created" };
   }
   // END CREATE
 
@@ -223,6 +231,7 @@ export default class API extends DataSource {
   // =========================
   async deleteOrganization({ id, }: Arguments) {
     const organization = await this.store.organization.destroy({ where: { id }, });
+
     // delete all events and locations associated with this organization if they exist
     await this.store.location.destroy({
       where: {
@@ -235,18 +244,15 @@ export default class API extends DataSource {
       }
     })
 
-    // This would delete all locations and events that match the id, not necessarily the organizations events or locations
-    // await this.deleteLocation({ id })
-    // await this.deleteEvent({ id })
-    return organization;
+    return !!organization;
   }
   async deleteLocation({ id }: Arguments) {
     const location = await this.store.location.destroy({ where: { id } });
-    return location;
+    return !!location;
   }
   async deleteEvent({ id }: Arguments) {
     const event = await this.store.event.destroy({ where: { id } });
-    return event;
+    return !!event;
   }
   // END DELETE
 }
