@@ -14,16 +14,7 @@ export const createEvent = async (_: any, { name, dateAndTime, description, orga
         description,
         organizationId,
     });
-    if (results.message) {
-        return {
-            success: false,
-            results
-        }
-    }
-    return {
-        success: true,
-        results,
-    };
+    return results
 }
 
 export const updateEvent = async (_: any, { id, name, dateAndTime, description }: Arguments, { dataSources }: DataSourceParent) => {

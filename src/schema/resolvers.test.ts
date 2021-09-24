@@ -27,7 +27,10 @@ describe('resolvers', () => {
         }
     `;
     const CREATE_LOCATION = gql`
-        mutation CreateLocation($name: String! $address: String! $organizationId: ID!) {
+        mutation CreateLocation(
+            $name: String!, 
+            $address: String!, 
+            $organizationId: ID!) {
                 createLocation(name: $name, address: $address, organizationId: $organizationId) {
                     id
                     # name
@@ -42,9 +45,9 @@ describe('resolvers', () => {
     `;
     const CREATE_EVENT = gql`
         mutation CreateEvent(
-            $name: String! 
-            $dateAndTime: Date! 
-            $description: String! 
+            $name: String!, 
+            $dateAndTime: Date! ,
+            $description: String! ,
             $organizationId: ID!) {
                 createEvent(name: $name, dateAndTime: $dateAndTime, description: $description, organizationId: $organizationId) {
                     id
@@ -321,7 +324,8 @@ describe('resolvers', () => {
         })
 
         expect(results.errors).toBe(undefined)
-        expect(results.data?.organization)
+        // expect(results.data?.organization)
+        console.log(results.data?.organization)
     })
 
     it('Fetch Location By Id', async () => {
@@ -331,6 +335,9 @@ describe('resolvers', () => {
             query: GET_LOCATION,
             variables: { id: 1 }
         })
+
+        console.log("Find Location Test")
+        console.log(results)
 
         expect(results.errors).toBe(undefined)
     })
@@ -343,6 +350,9 @@ describe('resolvers', () => {
             query: GET_EVENT,
             variables: { id: 1 }
         })
+
+        console.log("Find Event Test")
+        console.log(results)
 
         expect(results.errors).toBe(undefined)
     })

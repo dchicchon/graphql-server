@@ -15,16 +15,18 @@ export default class API extends DataSource {
   // CREATE
   // =========================
   async createOrganization({ name }: CreateOrganizationArguments) {
+    console.log("Creating Organization")
     const [organization, created] = await this.store.organization.findOrCreate({
       where: {
         name,
       },
     });
-
+    console.log(organization)
     return organization.dataValues
     // return created ? organization.dataValues : { message: "Organization Already Created" };
   }
   async createLocation({ name, address, organizationId }: CreateLocationArguments) {
+    console.log("Creating Location")
     // At this point in the code, I should be using Google Maps API to check if the 
     // address provided is a valid address that can be called upon
     const client = new Client()
@@ -32,6 +34,7 @@ export default class API extends DataSource {
     const key: string = process.env.GOOGLE_MAPS_API_KEY! // fix this later somehow
     let r;
     try {
+      console.log("Getting Geocode")
       r = await client.geocode({
         params: {
           address: address,
@@ -40,7 +43,7 @@ export default class API extends DataSource {
         timeout: 3000 // milliseconds
       })
     } catch (e) {
-      // console.log(e)
+      console.log("Error in making location")
       return { message: "Error in creating location" }
       // return { message: e.response.data.error_message }
     } finally {
@@ -57,8 +60,7 @@ export default class API extends DataSource {
           organizationId,
         },
       });
-      console.log("Creating Location")
-      console.log(location.dataValues)
+      console.log(location)
       return location.dataValues
       // return created ? location.dataValues : { message: "Location Already Created" }
     }
@@ -69,7 +71,7 @@ export default class API extends DataSource {
     const [event, created] = await this.store.event.findOrCreate({
       where: { name, dateAndTime: dateAndTime, description, organizationId },
     });
-    console.log(event.dataValues)
+    console.log(event)
     return event.dataValues
     // return created ? event.dataValues : { message: "Event already created" };
   }

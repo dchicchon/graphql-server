@@ -13,16 +13,8 @@ export const createLocation = async (_: any, { name, address, organizationId }: 
         address,
         organizationId,
     });
-    if (results.message) {
-        return {
-            success: false,
-            results
-        }
-    }
-    return {
-        success: true,
-        results,
-    };
+    return results
+
 }
 
 export const updateLocation = async (_: any, { id, name, address }: Arguments, { dataSources }: DataSourceParent) => {
