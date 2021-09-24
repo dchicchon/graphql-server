@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.API = void 0;
 const apollo_datasource_1 = require("apollo-datasource");
 const google_maps_services_js_1 = require("@googlemaps/google-maps-services-js");
 class API extends apollo_datasource_1.DataSource {
@@ -30,7 +29,6 @@ class API extends apollo_datasource_1.DataSource {
             });
         }
         catch (e) {
-            console.log(e);
             return { message: "Error in creating location" };
         }
         finally {
@@ -60,13 +58,10 @@ class API extends apollo_datasource_1.DataSource {
         const organization = await this.store.organization.findOne({
             where: { id },
         });
-        console.log("Getting organization");
-        console.log(organization);
         return organization;
     }
     async getLocation({ id }) {
         const location = await this.store.location.findOne({ where: { id } });
-        console.log(location);
         return location;
     }
     async getEvent({ id }) {
@@ -126,7 +121,6 @@ class API extends apollo_datasource_1.DataSource {
     }
     async updateLocation({ id, name, address }) {
         if (address) {
-            console.log("Getting New latitude and longitude");
             const client = new google_maps_services_js_1.Client();
             let r;
             const key = process.env.GOOGLE_MAPS_API_KEY;
@@ -158,8 +152,6 @@ class API extends apollo_datasource_1.DataSource {
                         id
                     }
                 });
-                console.log("results");
-                console.log(results);
                 return results[0];
             }
         }
@@ -175,7 +167,6 @@ class API extends apollo_datasource_1.DataSource {
         }
     }
     async updateEvent({ id, name, dateAndTime, description }) {
-        console.log('Update Event');
         const updateObject = {};
         if (name)
             updateObject.name = name;
@@ -213,4 +204,4 @@ class API extends apollo_datasource_1.DataSource {
         return event;
     }
 }
-exports.API = API;
+exports.default = API;

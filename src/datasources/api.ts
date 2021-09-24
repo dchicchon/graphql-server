@@ -38,7 +38,7 @@ export default class API extends DataSource {
         timeout: 3000 // milliseconds
       })
     } catch (e) {
-      console.log(e)
+      // console.log(e)
       return { message: "Error in creating location" }
       // return { message: e.response.data.error_message }
     } finally {
@@ -74,13 +74,13 @@ export default class API extends DataSource {
     const organization = await this.store.organization.findOne({
       where: { id },
     });
-    console.log("Getting organization")
-    console.log(organization)
+    // console.log("Getting organization")
+    // console.log(organization)
     return organization
   }
   async getLocation({ id }: Arguments) {
     const location = await this.store.location.findOne({ where: { id } });
-    console.log(location);
+    // console.log(location);
     return location;
   }
   async getEvent({ id }: Arguments) {
@@ -153,7 +153,7 @@ export default class API extends DataSource {
   // For some reason, updated at is not working, should check up on this
   async updateLocation({ id, name, address }: Arguments) {
     if (address) {
-      console.log("Getting New latitude and longitude")
+      // console.log("Getting New latitude and longitude")
       const client = new Client()
       let r
       const key: string = process.env.GOOGLE_MAPS_API_KEY!
@@ -184,8 +184,8 @@ export default class API extends DataSource {
             id
           }
         });
-        console.log("results")
-        console.log(results)
+        // console.log("results")
+        // console.log(results)
         return results[0]
       }
     } else {
@@ -203,7 +203,7 @@ export default class API extends DataSource {
 
   }
   async updateEvent({ id, name, dateAndTime, description }: Arguments) {
-    console.log('Update Event')
+    // console.log('Update Event')
     const updateObject: UpdateObject = {}
     if (name) updateObject.name = name;
     if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)

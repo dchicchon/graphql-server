@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.typeDefs = void 0;
 const apollo_server_1 = require("apollo-server");
-exports.typeDefs = (0, apollo_server_1.gql) `
+const typeDefs = (0, apollo_server_1.gql) `
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
   
@@ -88,7 +87,7 @@ exports.typeDefs = (0, apollo_server_1.gql) `
 
   type Mutation {
     """Creates an organization"""
-    createOrganization("A new organization name"name: String!): Response!
+    createOrganization("A new organization name" newOrganization: NewOrganization!): NewOrganizationResponse!
 
     """Creates a location"""
     createLocation(
@@ -149,4 +148,13 @@ exports.typeDefs = (0, apollo_server_1.gql) `
     deleteEvent("Organization id to delete"id: ID!): Response!
   }
 
+  input NewOrganization {
+    name: String!
+  }
+
+  type NewOrganizationResponse {
+    organizations:[Organization]
+  }
+
 `;
+exports.default = typeDefs;

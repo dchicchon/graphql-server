@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolvers = void 0;
 const scalars_1 = require("./scalars");
 const organization_1 = require("./organization");
 const location_1 = require("./location");
 const event_1 = require("./event");
-exports.resolvers = {
+const resolvers = {
     Query: {
         organization: organization_1.organization,
         location: location_1.location,
@@ -46,3 +45,4 @@ exports.resolvers = {
     },
     Date: scalars_1.Scalars.dateScalar,
 };
+exports.default = resolvers;

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createStore = void 0;
 const sequelize_1 = require("sequelize");
 const createStore = () => {
     const db = new sequelize_1.Sequelize({
@@ -78,4 +77,4 @@ const createStore = () => {
     db.sync();
     return { db, organization, location, event };
 };
-exports.createStore = createStore;
+exports.default = createStore;

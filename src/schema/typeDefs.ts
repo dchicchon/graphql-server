@@ -86,7 +86,7 @@ const typeDefs = gql`
 
   type Mutation {
     """Creates an organization"""
-    createOrganization("A new organization name"name: String!): Response!
+    createOrganization("A new organization name" newOrganization: NewOrganization!): NewOrganizationResponse!
 
     """Creates a location"""
     createLocation(
@@ -145,6 +145,14 @@ const typeDefs = gql`
 
     """Deletes an event"""
     deleteEvent("Organization id to delete"id: ID!): Response!
+  }
+
+  input NewOrganization {
+    name: String!
+  }
+
+  type NewOrganizationResponse {
+    organizations:[Organization]
   }
 
 `;

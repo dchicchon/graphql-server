@@ -1,4 +1,4 @@
-import { Organization } from '../interfaces/types'
+import { Organization } from '../interfaces/Types'
 export default function organizationSample(): Organization[] {
     return [
         {
