@@ -9,13 +9,21 @@ import API from '../datasources/api'
 import createStore from '../datasources/store'
 
 describe('resolvers', () => {
-    // Fetch by Id
-    it('fetch one organization by id', async () => {
-        const store: Store = createStore();
+    let server: ApolloServer;
+    beforeAll(async () => {
+        const store = createStore()
         const dataSources = () => ({
             api: new API(store)
         })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
+        server = new ApolloServer({ typeDefs, resolvers, dataSources })
+        // maybe inject some data into the database beforehand and then delete afterwards
+    })
+
+    afterAll(async () => {
+
+    })
+    // Fetch by Id
+    it('fetch one organization by id', async () => {
 
         // start using executeOperation to test my server
         const GET_ORGANIZATION = gql`
@@ -40,12 +48,6 @@ describe('resolvers', () => {
     })
 
     it('fetch one location by id', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
-
         // start using executeOperation to test my server
         const GET_LOCATION = gql`
                 query GetLocation($id: ID!) {
@@ -71,11 +73,6 @@ describe('resolvers', () => {
     })
 
     it('fetch one event by id', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_EVENT = gql`
@@ -102,11 +99,6 @@ describe('resolvers', () => {
 
     // Fetch All By Id
     it('fetch multiple organizations by ids', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_ORGANIZATIONS = gql`
@@ -131,11 +123,6 @@ describe('resolvers', () => {
     })
 
     it('fetch multiple locations by id', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_LOCATIONS = gql`
@@ -162,11 +149,6 @@ describe('resolvers', () => {
     })
 
     it('fetch multiple events by id', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_EVENTS = gql`
@@ -193,11 +175,6 @@ describe('resolvers', () => {
 
     // Fetch All
     it('fetches all organizations', async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_ORGANIZATIONS = gql`
@@ -224,11 +201,6 @@ describe('resolvers', () => {
     })
 
     it("fetches all locations", async () => {
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
         // start using executeOperation to test my server
         const GET_LOCATIONS = gql`
@@ -256,13 +228,6 @@ describe('resolvers', () => {
 
     })
     it("fetches all events", async () => {
-
-        const store: Store = createStore();
-        const dataSources = () => ({
-            api: new API(store)
-        })
-        const server = new ApolloServer({ typeDefs, resolvers, dataSources })
-
         // start using executeOperation to test my server
         const GET_EVENTS = gql`
             query GetEvents {
@@ -286,9 +251,6 @@ describe('resolvers', () => {
         expect(results.errors).toBe(undefined)
 
     })
-
-
-
 
     // Work on this later
 
