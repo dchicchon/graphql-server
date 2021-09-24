@@ -125,4 +125,12 @@ export default class Location {
         const location = await this.location.destroy({ where: { id } });
         return !!location;
     }
+
+    async deleteLocationByOrganizationId({ organizationId }: Arguments) {
+        // console.log("Delete Location in API by organizationId")
+        const deleteResult = await this.location.destroy({ where: { organizationId } })
+        // console.log(deleteResult)
+        return deleteResult
+
+    }
 }

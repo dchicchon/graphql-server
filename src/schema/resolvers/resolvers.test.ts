@@ -14,7 +14,7 @@ import Location from '../../datasources/api/location'
 import Event from '../../datasources/api/event'
 import { config } from 'dotenv'
 
-describe("Testing Test Suite", () => {
+describe("Testing Jest", () => {
     it("Runs a test", async () => {
         const item = 1;
         expect(item).toBe(1)
@@ -63,19 +63,27 @@ describe('resolvers', () => {
 
     // TESTS: CREATE
     it("Create an Organization", async () => {
-        expect.assertions(1)
-        const organizationResult = await server.executeOperation({
+        expect.assertions(2)
+        const result = await server.executeOperation({
             query: Queries.CREATE_ORGANIZATION,
             variables: { name: "Polus" }
         })
 
-        expect(organizationResult.errors).toBe(undefined)
+        expect(result.errors).toBe(undefined)
+        expect(result.data?.createOrganization.name).toBe("Polus")
+
     })
 
     it("Creates a Location", async () => {
-        expect.assertions(1)
-
-        const locationResult = await server.executeOperation({
+        expect.assertions(2)
+        const expectedResult = {
+            name: "Polus Headquarters",
+            address: "205 W 109th Street, New York, New York 100025",
+            latitude: "40.802731",
+            longitude: "-73.96481059999999",
+            organizationId: "1",
+        }
+        const result = await server.executeOperation({
             query: Queries.CREATE_LOCATION,
             variables: {
                 name: "Polus Headquarters",
@@ -84,12 +92,19 @@ describe('resolvers', () => {
             }
         })
 
-        expect(locationResult.errors).toBe(undefined)
-
+        expect(result.errors).toBe(undefined)
+        expect(result.data?.createLocation).toEqual(expectedResult)
     })
 
     it("Creates an Event", async () => {
-        expect.assertions(1)
+        expect.assertions(2)
+
+        const expectedResult = {
+            name: "Party!",
+            description: "A gathering of friends",
+            // dateAndTime: new Date(),
+            organizationId: "1"
+        }
 
         const eventResult = await server.executeOperation({
             query: Queries.CREATE_EVENT,
@@ -102,6 +117,7 @@ describe('resolvers', () => {
         })
 
         expect(eventResult.errors).toBe(undefined)
+        expect(eventResult.data?.createEvent).toEqual(expectedResult)
 
     })
 
@@ -187,9 +203,7 @@ describe('resolvers', () => {
             query: Queries.GET_ALL_ORGANIZATIONS
         })
 
-
         expect(results.errors).toBe(undefined)
-
 
     })
 
@@ -215,23 +229,50 @@ describe('resolvers', () => {
     })
 
     it("Updates an Organization", async () => {
-        expect.assertions(1)
-        const results = await server.executeOperation({
+        expect.assertions(2)
+        console.log("Updating an Organization")
+        // First find the first item in our database and update it
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS,
+        })
+
+        // console.log(findResult.data?.allOrganizations)
+
+        const updateResult = await server.executeOperation({
             query: Queries.UPDATE_ORGANIZATION,
             variables: {
-                id: 1,
+                id: parseInt(findResult.data?.allOrganizations[0].id),
                 name: "Pola"
             }
         })
-        expect(results.errors).toBe(undefined)
+
+        // console.log(updateResult)
+
+        expect(updateResult.errors).toBe(undefined)
+        expect(updateResult.data?.updateOrganization.name).toBe("Pola")
     })
 
-    // it("Deletes 1st Organization along with all it's Locations and Events", async () => {
-    //     expect.assertions(1)
 
-    //     const result = 
-    //     expect(result.data?.deleteOrganization.success).toBe(true)
-    // })
+
+    it("Delete the first Organization", async () => {
+        expect.assertions(2)
+
+        const expectedResult = {
+            success: true
+        }
+
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        })
+
+        const deleteResult = await server.executeOperation({
+            query: Queries.DELETE_ORGANIZATION,
+            variables: { id: findResult.data?.allOrganizations[0].id }
+        })
+
+        expect(deleteResult.errors).toBe(undefined)
+        expect(deleteResult.data?.deleteOrganization).toEqual(expectedResult)
+    })
 
 
 })

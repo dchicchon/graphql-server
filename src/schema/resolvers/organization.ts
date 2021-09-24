@@ -15,15 +15,20 @@ const createOrganization = async (_: any, { name }: Arguments, { dataSources }: 
 const updateOrganization = async (_: any, { id, name }: Arguments, { dataSources }: DataSourceParent) => {
     // console.log("Update Org in Resolvers")
     const results = await dataSources.api.organization.updateOrganization({ id, name });
+    // console.log("Resolver Results")
     // console.log(results)
     return results
 }
 
 const deleteOrganization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
-    const results = await dataSources.api.organization.deleteOrganization({ id });
-    return {
-        success: results
-    };
+    // console.log("Delete Organization in Resolvers")
+    const deleteOrganizationResults = await dataSources.api.organization.deleteOrganization({ id });
+    // console.log(deleteOrganizationResults)
+    const deleteLocationResults = await dataSources.api.location.deleteLocationByOrganizationId({ organizationId: id })
+    // console.log(deleteLocationResults)
+    const deleteEventResults = await dataSources.api.event.deleteEventByOrganizationId({ organizationId: id })
+    // console.log(deleteEventResults)
+    return { success: !!deleteOrganizationResults };
 }
 
 const Organization = {

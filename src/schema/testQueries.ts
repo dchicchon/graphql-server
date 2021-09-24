@@ -4,10 +4,10 @@ import { gql } from 'apollo-server'
 export const CREATE_ORGANIZATION = gql`
   mutation CreateOrganization($name: String!) {
       createOrganization(name: $name) {
-          id
+        #   id
           name
-          createdAt
-          updatedAt
+        #   createdAt
+        #   updatedAt
       }
   }
 `;
@@ -17,14 +17,14 @@ export const CREATE_LOCATION = gql`
       $address: String!, 
       $organizationId: ID!) {
           createLocation(name: $name, address: $address, organizationId: $organizationId) {
-              id
-              # name
-              # address
-              # latitude
-              # longitude
+            #   id
+              name
+              address
+              latitude
+              longitude
+              organizationId 
               # createdAt
               # updatedAt
-              # organizationId
           }
   }
 `;
@@ -35,13 +35,13 @@ export const CREATE_EVENT = gql`
       $description: String! ,
       $organizationId: ID!) {
           createEvent(name: $name, dateAndTime: $dateAndTime, description: $description, organizationId: $organizationId) {
-              id
-              # name
+            #   id
+              name
+              description
+              organizationId
               # dateAndTime
-              # description
               # createdAt
               # updatedAt
-              # organizationId
           }
 
   }
@@ -176,8 +176,8 @@ export const UPDATE_ORGANIZATION = gql`
       updateOrganization(id: $id, name: $name) {
           id
           name
-          updatedAt
-          createdAt
+        #   updatedAt
+        #   createdAt
       }
   }
 `

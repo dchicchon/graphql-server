@@ -76,4 +76,11 @@ export default class Event {
         const event = await this.event.destroy({ where: { id } });
         return !!event;
     }
+
+    async deleteEventByOrganizationId({ organizationId }: Arguments) {
+        // console.log("Delete Event in API by Organization Id")
+        const deleteResult = await this.event.destroy({ where: { organizationId } })
+        // console.log(deleteResult)
+        return deleteResult
+    }
 }

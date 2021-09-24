@@ -40,6 +40,8 @@ export default class Organization {
 
     async updateOrganization({ id, name }: Arguments) {
         // console.log("Update Org in API")
+
+        // Returns an array [rows affected, ]
         const resultsArray = await this.organization.update(
             { name },
             {
@@ -47,11 +49,20 @@ export default class Organization {
                     id
                 }
             });
-        const resultFind = await this.getOrganization({ id: resultsArray[0] })
-        // console.log(resultFind.dataValues)
+        // console.log("API Result")
+        // console.log(resultsArray)
+
+        const resultFind = await this.getOrganization({ id })
         // might have to do a find to grab the organization 
         // and return it to the user
         return resultFind.dataValues;
+    }
+
+    async deleteOrganization({ id }: Arguments) {
+        // console.log("Deleting Organization in API")
+        const deleteResult = await this.organization.destroy({ where: { id } })
+        // console.log(deleteResult)
+        return deleteResult
     }
 
 
