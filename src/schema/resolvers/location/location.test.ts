@@ -103,7 +103,7 @@ describe('resolvers', () => {
 
     })
 
-    it("Updates a Location", async () => {
+    it("Updates a Location's name", async () => {
 
         expect.assertions(2)
         const updateResult = await server.executeOperation({
@@ -117,6 +117,21 @@ describe('resolvers', () => {
         expect(updateResult.errors).toBe(undefined)
         expect(updateResult.data?.updateLocation.name).toBe("Twitter Resort")
     })
+
+    it("Update's a Location's address", async () => {
+        expect.assertions(2)
+        const updateResult = await server.executeOperation({
+            query: LocationQueries.UPDATE_LOCATION,
+            variables: {
+                address: "Lanai Ave, Lanai City, HI 96763",
+                id: locationId,
+            }
+        })
+
+        expect(updateResult.errors).toBe(undefined)
+        expect(updateResult.data?.updateLocation.name).toBe("Twitter Resort")
+    })
+
 
     it("Creates and Deletes a Location", async () => {
         expect.assertions(2)
