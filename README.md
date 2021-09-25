@@ -14,7 +14,7 @@ To run this project, run the following commands in the console
 
 `Installs Dependencies`
 ```console
-npm install -g ts-node && npm install
+npm install
 ```
 `Starts Server`
 ```console
