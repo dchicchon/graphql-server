@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { createTestServer } from '../testUtils/createTestServer'
-import * as Queries from '../testUtils/Queries'
+import * as Queries from '../testUtils/eventQueries'
+import * as OrganizationQueries from '../testUtils/OrganizationQueries'
 describe('All Resolvers', () => {
     let server: ApolloServer;
     let organizationId: any;

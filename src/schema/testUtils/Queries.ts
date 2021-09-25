@@ -11,6 +11,7 @@ export const CREATE_ORGANIZATION = gql`
       }
   }
 `;
+
 export const CREATE_LOCATION = gql`
   mutation CreateLocation(
       $name: String!, 
@@ -214,8 +215,6 @@ export const UPDATE_EVENT = gql`
 
   }
 `;
-
-
 
 // DELETE
 export const DELETE_ORGANIZATION = gql`
