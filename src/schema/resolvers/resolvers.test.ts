@@ -54,7 +54,7 @@ describe('All Resolvers', () => {
     })
 
     it("Creates a Location", async () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
@@ -63,14 +63,6 @@ describe('All Resolvers', () => {
 
         const organizationId = findResult.data?.allOrganizations[0].id
 
-        // const expectedResult = {
-        //     name: "Polus Headquarters",
-        //     address: "205 W 109th Street, New York, New York 100025",
-        //     latitude: "40.802731",
-        //     longitude: "-73.96481059999999",
-        //     organizationId,
-        // }
-
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
@@ -78,12 +70,12 @@ describe('All Resolvers', () => {
             variables: {
                 name: "Polus Headquarters",
                 address: "205 W 109th Street, New York, New York 100025",
-                organizationId: organizationId,
+                organizationId,
             }
         })
 
         expect(findResult.errors).toBe(undefined)
-        // expect(findResult.data?.allOrganizations).toHaveLength(1)
+        expect(findResult.data?.allOrganizations).toHaveLength(1)
         expect(createResult.errors).toBe(undefined)
         expect(createResult.data?.createLocation.name).toBe("Polus Headquarters")
     })
@@ -97,14 +89,6 @@ describe('All Resolvers', () => {
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
-
-
-        // const expectedResult = {
-        //     name: "Party!",
-        //     description: "A gathering of friends",
-        //     dateAndTime: new Date('10/12/2021').getTime(),
-        //     organizationId
-        // }
 
         const eventResult = await server.executeOperation({
             query: EventQueries.CREATE_EVENT,
