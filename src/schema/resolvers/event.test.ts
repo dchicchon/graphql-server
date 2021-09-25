@@ -1,7 +1,8 @@
 import { ApolloServer } from 'apollo-server'
 import { createTestServer } from '../testUtils/createTestServer'
-import * as Queries from '../testUtils/eventQueries'
-import * as OrganizationQueries from '../testUtils/OrganizationQueries'
+import * as EventQueries from '../testUtils/eventQueries'
+import * as OrganizationQueries from '../testUtils/organizationQueries'
+
 describe('All Resolvers', () => {
     let server: ApolloServer;
     let organizationId: any;
@@ -10,12 +11,12 @@ describe('All Resolvers', () => {
     beforeAll(async () => {
         server = await createTestServer();
         const createOrganizationResult = await server.executeOperation({
-            query: Queries.CREATE_ORGANIZATION,
+            query: OrganizationQueries.CREATE_ORGANIZATION,
             variables: { name: "Facebook" }
         })
         organizationId = createOrganizationResult.data?.createOrganization.id
         const createEventResult = await server.executeOperation({
-            query: Queries.CREATE_EVENT,
+            query: EventQueries.CREATE_EVENT,
             variables: {
                 name: "Expunge User Data",
                 description: "NSA is coming by soon. Delete everything!",
@@ -30,11 +31,11 @@ describe('All Resolvers', () => {
     afterAll(async () => {
         // Delete all remaining organizations
         const result = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
         for (const org of result.data?.allOrganizations) {
             await server.executeOperation({
-                query: Queries.DELETE_ORGANIZATION,
+                query: OrganizationQueries.DELETE_ORGANIZATION,
                 variables: {
                     id: org.id
                 }
@@ -49,13 +50,13 @@ describe('All Resolvers', () => {
         expect.assertions(2)
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
 
         const eventResult = await server.executeOperation({
-            query: Queries.CREATE_EVENT,
+            query: EventQueries.CREATE_EVENT,
             variables: {
                 name: "Mark's Birthday",
                 dateAndTime: new Date('12/22/2022'),
@@ -72,7 +73,7 @@ describe('All Resolvers', () => {
     it('Fetch Event By Id', async () => {
         expect.assertions(2)
         const results = await server.executeOperation({
-            query: Queries.GET_EVENT,
+            query: EventQueries.GET_EVENT,
             variables: { id: eventId }
         })
 
@@ -86,7 +87,7 @@ describe('All Resolvers', () => {
 
 
         const results = await server.executeOperation({
-            query: Queries.GET_EVENTS,
+            query: EventQueries.GET_EVENTS,
             variables: { ids: [1] }
         })
 
@@ -97,7 +98,7 @@ describe('All Resolvers', () => {
         expect.assertions(2)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_ALL_EVENTS
+            query: EventQueries.GET_ALL_EVENTS
         })
 
         expect(findResults.errors).toBe(undefined)
@@ -110,7 +111,7 @@ describe('All Resolvers', () => {
         expect.assertions(2)
 
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_EVENT,
+            query: EventQueries.UPDATE_EVENT,
             variables: {
                 id: eventId,
                 name: "Not Expunging Data",
@@ -128,7 +129,7 @@ describe('All Resolvers', () => {
         expect.assertions(4)
 
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_EVENT,
+            query: EventQueries.UPDATE_EVENT,
             variables: {
                 id: eventId,
                 name: "Okay we're Expunging Data",
@@ -137,7 +138,7 @@ describe('All Resolvers', () => {
         })
 
         const updateResult2 = await server.executeOperation({
-            query: Queries.UPDATE_EVENT,
+            query: EventQueries.UPDATE_EVENT,
             variables: {
                 id: eventId,
                 name: "Expunge Data Party",
@@ -157,7 +158,7 @@ describe('All Resolvers', () => {
             success: true
         }
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_EVENT,
+            query: EventQueries.CREATE_EVENT,
             variables: {
                 name: "Stockholder Meeting",
                 dateAndTime: new Date('11/11/2021'),
@@ -169,7 +170,7 @@ describe('All Resolvers', () => {
         const eventId = createResult.data?.createEvent.id
 
         const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_EVENT,
+            query: EventQueries.DELETE_EVENT,
             variables: { id: eventId }
         })
 

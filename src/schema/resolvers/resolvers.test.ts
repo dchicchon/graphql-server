@@ -1,6 +1,8 @@
 import { ApolloServer } from 'apollo-server'
 import { createTestServer } from '../testUtils/createTestServer'
-import * as Queries from '../testUtils/Queries'
+import * as OrganizationQueries from '../testUtils/organizationQueries'
+import * as LocationQueries from '../testUtils/locationQueries'
+import * as EventQueries from '../testUtils/eventQueries'
 
 describe("Testing Jest", () => {
     it("Runs a test", async () => {
@@ -22,18 +24,18 @@ describe('All Resolvers', () => {
     afterAll(async () => {
         // Delete all remaining organizations
         const result = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
         for (const org of result.data?.allOrganizations) {
             await server.executeOperation({
-                query: Queries.DELETE_ORGANIZATION,
+                query: OrganizationQueries.DELETE_ORGANIZATION,
                 variables: {
                     id: org.id
                 }
             })
         }
         const result2 = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
         // console.log(result2.data?.allOrganizations) // this should be 0
 
@@ -43,7 +45,7 @@ describe('All Resolvers', () => {
     it("Create an Organization", async () => {
         expect.assertions(2)
         const result = await server.executeOperation({
-            query: Queries.CREATE_ORGANIZATION,
+            query: OrganizationQueries.CREATE_ORGANIZATION,
             variables: { name: "Polus" }
         })
 
@@ -56,7 +58,7 @@ describe('All Resolvers', () => {
 
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
@@ -72,7 +74,7 @@ describe('All Resolvers', () => {
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_LOCATION,
+            query: LocationQueries.CREATE_LOCATION,
             variables: {
                 name: "Polus Headquarters",
                 address: "205 W 109th Street, New York, New York 100025",
@@ -91,7 +93,7 @@ describe('All Resolvers', () => {
 
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
@@ -105,7 +107,7 @@ describe('All Resolvers', () => {
         // }
 
         const eventResult = await server.executeOperation({
-            query: Queries.CREATE_EVENT,
+            query: EventQueries.CREATE_EVENT,
             variables: {
                 name: "Party!",
                 dateAndTime: new Date('10/12/2021'),
@@ -123,7 +125,7 @@ describe('All Resolvers', () => {
     it('Fetch Organization by Id', async () => {
         expect.assertions(1)
         const results = await server.executeOperation({
-            query: Queries.GET_ORGANIZATION,
+            query: OrganizationQueries.GET_ORGANIZATION,
             variables: { id: 1 }
         })
 
@@ -136,7 +138,7 @@ describe('All Resolvers', () => {
         expect.assertions(1)
 
         const results = await server.executeOperation({
-            query: Queries.GET_LOCATION,
+            query: LocationQueries.GET_LOCATION,
             variables: { id: 1 }
         })
 
@@ -151,7 +153,7 @@ describe('All Resolvers', () => {
         expect.assertions(1)
 
         const results = await server.executeOperation({
-            query: Queries.GET_EVENT,
+            query: EventQueries.GET_EVENT,
             variables: { id: 1 }
         })
 
@@ -165,13 +167,13 @@ describe('All Resolvers', () => {
         expect.assertions(1)
 
         const findAllResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationIds = findAllResult.data?.allOrganizations.map((organization: any) => organization.id)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_ORGANIZATIONS,
+            query: OrganizationQueries.GET_ORGANIZATIONS,
             variables: { id: [organizationIds] }
         })
 
@@ -185,13 +187,13 @@ describe('All Resolvers', () => {
         expect.assertions(1)
 
         const findAllResult = await server.executeOperation({
-            query: Queries.GET_ALL_LOCATIONS
+            query: LocationQueries.GET_ALL_LOCATIONS
         })
 
         const locationIds = findAllResult.data?.allLocations.map((location: any) => location.id)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_LOCATIONS,
+            query: LocationQueries.GET_LOCATIONS,
             variables: { ids: locationIds }
         })
 
@@ -203,12 +205,12 @@ describe('All Resolvers', () => {
         expect.assertions(1)
 
         const findAllResult = await server.executeOperation({
-            query: Queries.GET_ALL_EVENTS
+            query: EventQueries.GET_ALL_EVENTS
         })
         const eventIds = findAllResult.data?.allEvents.map((event: any) => event.id)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_EVENTS,
+            query: EventQueries.GET_EVENTS,
             variables: { ids: eventIds }
         })
 
@@ -221,7 +223,7 @@ describe('All Resolvers', () => {
         expect.assertions(2)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_ALL_LOCATIONS
+            query: LocationQueries.GET_ALL_LOCATIONS
         })
 
         expect(findResults.errors).toBe(undefined)
@@ -232,7 +234,7 @@ describe('All Resolvers', () => {
         expect.assertions(2)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_ALL_EVENTS
+            query: EventQueries.GET_ALL_EVENTS
         })
 
         expect(findResults.errors).toBe(undefined)
@@ -246,7 +248,7 @@ describe('All Resolvers', () => {
         // console.log("Updating an Organization")
         // First find the first item in our database and update it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS,
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS,
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
@@ -254,7 +256,7 @@ describe('All Resolvers', () => {
         // console.log(findResult.data?.allOrganizations)
 
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_ORGANIZATION,
+            query: OrganizationQueries.UPDATE_ORGANIZATION,
             variables: {
                 id: organizationId,
                 name: "Pola"
@@ -262,7 +264,7 @@ describe('All Resolvers', () => {
         })
 
         const revertResult = await server.executeOperation({
-            query: Queries.UPDATE_ORGANIZATION,
+            query: OrganizationQueries.UPDATE_ORGANIZATION,
             variables: {
                 id: organizationId,
                 name: "Polus"
@@ -281,12 +283,12 @@ describe('All Resolvers', () => {
 
         expect.assertions(4)
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const locationId = findResult.data?.allOrganizations[0].locations[0].id
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_LOCATION,
+            query: LocationQueries.UPDATE_LOCATION,
             variables: {
                 name: "Polus Resort",
                 id: locationId,
@@ -303,13 +305,13 @@ describe('All Resolvers', () => {
     it("Updates an Event", async () => {
         expect.assertions(4)
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const eventId = findResult.data?.allOrganizations[0].events[0].id
 
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_EVENT,
+            query: EventQueries.UPDATE_EVENT,
             variables: {
                 id: eventId,
                 name: "Birthday",
@@ -331,7 +333,7 @@ describe('All Resolvers', () => {
         expect.assertions(4)
 
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_ORGANIZATION,
+            query: OrganizationQueries.CREATE_ORGANIZATION,
             variables: { name: "Google" }
         })
 
@@ -342,7 +344,7 @@ describe('All Resolvers', () => {
         const organizationId = createResult.data?.createOrganization.id
 
         const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_ORGANIZATION,
+            query: OrganizationQueries.DELETE_ORGANIZATION,
             variables: { id: organizationId }
         })
 
@@ -359,7 +361,7 @@ describe('All Resolvers', () => {
         }
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
@@ -367,7 +369,7 @@ describe('All Resolvers', () => {
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_LOCATION,
+            query: LocationQueries.CREATE_LOCATION,
             variables: {
                 name: "Company Island",
                 address: "23 Happy Valley Rd, Pembroke, Bermuda",
@@ -378,7 +380,7 @@ describe('All Resolvers', () => {
         const locationId = createResult.data?.createLocation.id
 
         const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_LOCATION,
+            query: LocationQueries.DELETE_LOCATION,
             variables: { id: locationId }
         })
 
@@ -395,7 +397,7 @@ describe('All Resolvers', () => {
         }
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
         const organizationId = findResult.data?.allOrganizations[0].id
@@ -403,7 +405,7 @@ describe('All Resolvers', () => {
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_EVENT,
+            query: EventQueries.CREATE_EVENT,
             variables: {
                 name: "Stockholder Meeting",
                 dateAndTime: new Date('11/11/2021'),
@@ -415,7 +417,7 @@ describe('All Resolvers', () => {
         const eventId = createResult.data?.createEvent.id
 
         const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_EVENT,
+            query: EventQueries.DELETE_EVENT,
             variables: { id: eventId }
         })
 

@@ -1,6 +1,8 @@
 import { ApolloServer } from 'apollo-server'
 import { createTestServer } from '../testUtils/createTestServer'
-import * as Queries from '../testUtils/Queries'
+import * as LocationQueries from '../testUtils/locationQueries'
+import * as OrganizationQueries from '../testUtils/organizationQueries'
+
 
 // Make multiple tests for resolvers probably
 // Resolvers Test
@@ -13,12 +15,12 @@ describe('resolvers', () => {
 
         // create some data here
         const createOrganizationResult = await server.executeOperation({
-            query: Queries.CREATE_ORGANIZATION,
+            query: OrganizationQueries.CREATE_ORGANIZATION,
             variables: { name: "Twitter" }
         })
         organizationId = createOrganizationResult.data?.createOrganization.id
         const createLocationResult = await server.executeOperation({
-            query: Queries.CREATE_LOCATION,
+            query: LocationQueries.CREATE_LOCATION,
             variables: {
                 name: "Twitter SF Headquarters",
                 address: "1355 Market St #900, San Francisco, CA 94103",
@@ -30,13 +32,13 @@ describe('resolvers', () => {
 
     afterAll(async () => {
         const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
         for (const org of findResult.data?.allOrganizations) {
             const organizationId = org.id
 
             const deleteResult = await server.executeOperation({
-                query: Queries.DELETE_ORGANIZATION,
+                query: OrganizationQueries.DELETE_ORGANIZATION,
                 variables: { id: organizationId }
             })
         }
@@ -46,7 +48,7 @@ describe('resolvers', () => {
         expect.assertions(2)
 
         const createResult = await server.executeOperation({
-            query: Queries.CREATE_LOCATION,
+            query: LocationQueries.CREATE_LOCATION,
             variables: {
                 name: "Twitter NYC Headquarters",
                 address: "245 W 17th St, New York, NY 11238",
@@ -62,7 +64,7 @@ describe('resolvers', () => {
         expect.assertions(2)
 
         const findResult = await server.executeOperation({
-            query: Queries.GET_LOCATION,
+            query: LocationQueries.GET_LOCATION,
             variables: { id: locationId }
         })
 
@@ -75,13 +77,13 @@ describe('resolvers', () => {
         expect.assertions(2)
 
         const findAllResults = await server.executeOperation({
-            query: Queries.GET_ALL_LOCATIONS
+            query: LocationQueries.GET_ALL_LOCATIONS
         })
 
         const locationIds = findAllResults.data?.allLocations.map((location: any) => location.id)
 
         const results = await server.executeOperation({
-            query: Queries.GET_LOCATIONS,
+            query: LocationQueries.GET_LOCATIONS,
             variables: { ids: locationIds }
         })
 
@@ -93,7 +95,7 @@ describe('resolvers', () => {
         expect.assertions(2)
 
         const findResults = await server.executeOperation({
-            query: Queries.GET_ALL_LOCATIONS
+            query: LocationQueries.GET_ALL_LOCATIONS
         })
 
         expect(findResults.errors).toBe(undefined)
@@ -105,7 +107,7 @@ describe('resolvers', () => {
 
         expect.assertions(2)
         const updateResult = await server.executeOperation({
-            query: Queries.UPDATE_LOCATION,
+            query: LocationQueries.UPDATE_LOCATION,
             variables: {
                 name: "Twitter Resort",
                 id: locationId,
@@ -124,7 +126,7 @@ describe('resolvers', () => {
         // First find the first organization that shows up and use its id
 
         const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_LOCATION,
+            query: LocationQueries.DELETE_LOCATION,
             variables: { id: locationId }
         })
 
