@@ -4,7 +4,8 @@
   "description": "Basic GraphQL Server made with TypeScript",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon",
+    "start": "node ./build/index.js",
+    "dev": "nodemon",
     "test": "jest --runInBand"
   },
   "keywords": [],

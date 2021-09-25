@@ -28,7 +28,25 @@ const dataSources = () => ({
 const server = new apollo_server_1.ApolloServer({
     typeDefs: [organization_1.typeDefs, location_1.typeDefs, event_1.typeDefs],
     resolvers: [organization_2.resolvers, location_2.resolvers, event_2.resolvers, util_1.resolvers],
-    dataSources
+    dataSources,
+    plugins: [
+        {
+            async serverWillStart() {
+                console.log("Server Starting Up");
+            },
+            async requestDidStart() {
+                console.log("Request Started");
+                return {
+                    async parsingDidStart(requestContext) {
+                        console.log("Parsing Started");
+                    },
+                    async validationDidStart(requestContext) {
+                        console.log("Validation started");
+                    }
+                };
+            }
+        }
+    ]
 });
 server.listen().then(({ url }) => {
     console.log("Server ready at", url);

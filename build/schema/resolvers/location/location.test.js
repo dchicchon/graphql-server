@@ -104,13 +104,26 @@ describe('resolvers', () => {
         expect(findResults.errors).toBe(undefined);
         expect((_a = findResults.data) === null || _a === void 0 ? void 0 : _a.allLocations).toHaveLength(2);
     });
-    it("Updates a Location", async () => {
+    it("Updates a Location's name", async () => {
         var _a;
         expect.assertions(2);
         const updateResult = await server.executeOperation({
             query: LocationQueries.UPDATE_LOCATION,
             variables: {
                 name: "Twitter Resort",
+                id: locationId,
+            }
+        });
+        expect(updateResult.errors).toBe(undefined);
+        expect((_a = updateResult.data) === null || _a === void 0 ? void 0 : _a.updateLocation.name).toBe("Twitter Resort");
+    });
+    it("Update's a Location's address", async () => {
+        var _a;
+        expect.assertions(2);
+        const updateResult = await server.executeOperation({
+            query: LocationQueries.UPDATE_LOCATION,
+            variables: {
+                address: "Lanai Ave, Lanai City, HI 96763",
                 id: locationId,
             }
         });

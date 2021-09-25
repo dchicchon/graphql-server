@@ -25,7 +25,50 @@ const dataSources = () => ({
 const server = new ApolloServer({
     typeDefs: [organizationDefs, locationDefs, eventDefs],
     resolvers: [organizationResolvers, locationResolvers, eventResolvers, utilResolvers],
-    dataSources
+    dataSources,
+    plugins: [
+        {
+            async serverWillStart() {
+                console.log("Server Starting Up")
+            },
+            async requestDidStart(requestContext) {
+                console.log("Request Started")
+                console.log(requestContext)
+                return {
+                    async parsingDidStart(requestContext) {
+                        console.log("Parsing Started")
+                        // console.log(requestContext)
+                        return async (err) => {
+                            if (err) {
+                                console.error(err)
+                            }
+                        }
+                    },
+                    async validationDidStart(requestContext) {
+                        //This end hook is unique in that it can receive an array of errors,
+                        // which will contain every validation error that occurred.
+                        console.log("Validation started")
+                        // console.log(requestContext)
+                        return async (errs) => {
+                            if (errs) {
+                                errs.forEach(err => console.error(err))
+                            }
+                        }
+                    },
+                    async executionDidStart() {
+                        return {
+                            async executationDidEnd(err) {
+                                if (err) {
+                                    console.error(err)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    ]
 })
 
 server.listen().then(({ url }) => {
