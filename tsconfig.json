@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/node12/tsconfig.json",
+    "compilerOptions": {
+        "preserveConstEnums": true,
+        "removeComments": true,
+        "outDir": "./build",
+        "rootDir": "./src"
+    },
+    "exclude": [
+        "jest.config.ts"
+    ]
+}
