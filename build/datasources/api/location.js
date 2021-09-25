@@ -110,5 +110,9 @@ class Location {
         const location = await this.location.destroy({ where: { id } });
         return !!location;
     }
+    async deleteLocationByOrganizationId({ organizationId }) {
+        const deleteResult = await this.location.destroy({ where: { organizationId } });
+        return deleteResult;
+    }
 }
 exports.default = Location;

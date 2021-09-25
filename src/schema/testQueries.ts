@@ -4,10 +4,10 @@ import { gql } from 'apollo-server'
 export const CREATE_ORGANIZATION = gql`
   mutation CreateOrganization($name: String!) {
       createOrganization(name: $name) {
-        #   id
+          id
           name
-        #   createdAt
-        #   updatedAt
+          createdAt
+          updatedAt
       }
   }
 `;
@@ -17,7 +17,7 @@ export const CREATE_LOCATION = gql`
       $address: String!, 
       $organizationId: ID!) {
           createLocation(name: $name, address: $address, organizationId: $organizationId) {
-            #   id
+              id
               name
               address
               latitude
@@ -35,11 +35,11 @@ export const CREATE_EVENT = gql`
       $description: String! ,
       $organizationId: ID!) {
           createEvent(name: $name, dateAndTime: $dateAndTime, description: $description, organizationId: $organizationId) {
-            #   id
+              id
               name
               description
               organizationId
-              # dateAndTime
+              dateAndTime
               # createdAt
               # updatedAt
           }
@@ -94,8 +94,6 @@ export const GET_ORGANIZATIONS = gql`
           name
           createdAt
           updatedAt
-          # locations
-          # events
       }
   }
 `;
@@ -135,8 +133,14 @@ export const GET_ALL_ORGANIZATIONS = gql`
           name
           createdAt
           updatedAt
-          # locations
-          # events
+          locations {
+            id
+            name
+          }
+          events {
+            id
+            name
+          }
       }
   }
 `;
@@ -182,9 +186,36 @@ export const UPDATE_ORGANIZATION = gql`
   }
 `
 
-// export const UPDATE_LOCATION = gql``
+export const UPDATE_LOCATION = gql`
+  mutation UpdateLocation($id: ID!, $name: String, $address: String) {
+    updateLocation(id: $id, name: $name, address: $address) {
+        name
+        address
+        organizationId
+    }
+  }
+`
 
-// export const READ_LOCATION = gql``
+export const UPDATE_EVENT = gql`
+  mutation UpdateEvent(
+      $id: ID!
+      $name: String, 
+      $dateAndTime: Date ,
+      $description: String) {
+          updateEvent(id: $id, name: $name, dateAndTime: $dateAndTime, description: $description) {
+            #   id
+              name
+              description
+              organizationId
+              dateAndTime
+              # createdAt
+              # updatedAt
+          }
+
+  }
+`;
+
+
 
 // DELETE
 export const DELETE_ORGANIZATION = gql`
@@ -195,6 +226,18 @@ export const DELETE_ORGANIZATION = gql`
   }
 `
 
-// export const DELETE_LOCATION = gql``
+export const DELETE_LOCATION = gql`
+  mutation DeleteLocation($id: ID!) {
+    deleteLocation(id: $id) {
+      success
+    }
+  }
+`
 
-// export const DELETE_EVENT = gql``
+export const DELETE_EVENT = gql`
+  mutation DeleteEvent($id: ID!) {
+    deleteEvent(id: $id) {
+      success
+    }
+  }
+`

@@ -8,19 +8,5 @@ class API extends apollo_datasource_1.DataSource {
         this.location = location;
         this.event = event;
     }
-    async deleteOrganization({ id, }) {
-        const organization = await this.organization.destroy({ where: { id }, });
-        await this.location.destroy({
-            where: {
-                organizationId: id
-            }
-        });
-        await this.event.destroy({
-            where: {
-                organizationId: id
-            }
-        });
-        return !!organization;
-    }
 }
 exports.default = API;

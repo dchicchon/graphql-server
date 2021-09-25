@@ -5,10 +5,10 @@ const apollo_server_1 = require("apollo-server");
 exports.CREATE_ORGANIZATION = (0, apollo_server_1.gql) `
   mutation CreateOrganization($name: String!) {
       createOrganization(name: $name) {
-          id
+        #   id
           name
-          createdAt
-          updatedAt
+        #   createdAt
+        #   updatedAt
       }
   }
 `;
@@ -18,14 +18,14 @@ exports.CREATE_LOCATION = (0, apollo_server_1.gql) `
       $address: String!, 
       $organizationId: ID!) {
           createLocation(name: $name, address: $address, organizationId: $organizationId) {
-              id
-              # name
-              # address
-              # latitude
-              # longitude
+            #   id
+              name
+              address
+              latitude
+              longitude
+              organizationId 
               # createdAt
               # updatedAt
-              # organizationId
           }
   }
 `;
@@ -36,13 +36,13 @@ exports.CREATE_EVENT = (0, apollo_server_1.gql) `
       $description: String! ,
       $organizationId: ID!) {
           createEvent(name: $name, dateAndTime: $dateAndTime, description: $description, organizationId: $organizationId) {
-              id
-              # name
+            #   id
+              name
+              description
+              organizationId
               # dateAndTime
-              # description
               # createdAt
               # updatedAt
-              # organizationId
           }
 
   }
@@ -124,7 +124,7 @@ exports.GET_EVENTS = (0, apollo_server_1.gql) `
             }
 `;
 exports.GET_ALL_ORGANIZATIONS = (0, apollo_server_1.gql) `
-  query GetOrganizations {
+  query GetAllOrganizations {
       allOrganizations {
           id
           name
@@ -164,9 +164,12 @@ exports.GET_ALL_EVENTS = (0, apollo_server_1.gql) `
             }
         `;
 exports.UPDATE_ORGANIZATION = (0, apollo_server_1.gql) `
-  query UpdateOrganization($id: ID!, $name: String) {
+  mutation UpdateOrganization($id: ID!, $name: String!) {
       updateOrganization(id: $id, name: $name) {
-          
+          id
+          name
+        #   updatedAt
+        #   createdAt
       }
   }
 `;

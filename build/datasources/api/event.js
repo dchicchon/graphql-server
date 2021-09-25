@@ -5,11 +5,9 @@ class Event {
         this.event = event;
     }
     async createEvent({ name, dateAndTime, description, organizationId }) {
-        console.log("Creating Event");
         const [event, created] = await this.event.findOrCreate({
             where: { name, dateAndTime: dateAndTime, description, organizationId },
         });
-        console.log(event);
         return event.dataValues;
     }
     async getEvent({ id }) {
@@ -51,6 +49,10 @@ class Event {
     async deleteEvent({ id }) {
         const event = await this.event.destroy({ where: { id } });
         return !!event;
+    }
+    async deleteEventByOrganizationId({ organizationId }) {
+        const deleteResult = await this.event.destroy({ where: { organizationId } });
+        return deleteResult;
     }
 }
 exports.default = Event;

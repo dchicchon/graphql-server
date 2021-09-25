@@ -1,9 +1,18 @@
 import { Arguments, DataSourceParent, } from '../../interfaces/Types'
 
 // Queries
-const organization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => dataSources.api.organization.getOrganization({ id })
-const organizations = async (_: any, { ids }: Arguments, { dataSources }: DataSourceParent) => dataSources.api.organization.getOrganizations({ ids })
-const allOrganizations = async (_: any, __: any, { dataSources }: DataSourceParent) => dataSources.api.organization.getAllOrganizations()
+const organization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
+    const results = await dataSources.api.organization.getOrganization({ id })
+    return results
+}
+const organizations = async (_: any, { ids }: Arguments, { dataSources }: DataSourceParent) => {
+    const results = await dataSources.api.organization.getOrganizations({ ids })
+    return results
+}
+const allOrganizations = async (_: any, __: any, { dataSources }: DataSourceParent) => {
+    const results = await dataSources.api.organization.getAllOrganizations()
+    return results
+}
 
 // Mutations
 const createOrganization = async (_: any, { name }: Arguments, { dataSources }: DataSourceParent) => {
@@ -28,12 +37,26 @@ const deleteOrganization = async (_: any, { id }: Arguments, { dataSources }: Da
     // console.log(deleteLocationResults)
     const deleteEventResults = await dataSources.api.event.deleteEventByOrganizationId({ organizationId: id })
     // console.log(deleteEventResults)
-    return { success: !!deleteOrganizationResults };
+
+    // try to find the organization by the id
+    const result = await dataSources.api.organization.getOrganization({ id })
+    // this should come as empty
+    if (result) {
+        return { success: false };
+    } else {
+        return { success: true }
+    }
 }
 
 const Organization = {
-    locations: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => dataSources.api.location.getAllLocationsByOrgId({ id }),
-    events: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => dataSources.api.event.getAllEventsByOrgId({ id })
+    locations: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => {
+        const results = await dataSources.api.location.getAllLocationsByOrgId({ id })
+        return results
+    },
+    events: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => {
+        const results = await dataSources.api.event.getAllEventsByOrgId({ id })
+        return results
+    }
 }
 
 export const resolvers = {

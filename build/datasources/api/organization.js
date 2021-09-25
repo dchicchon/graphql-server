@@ -28,14 +28,17 @@ class Organization {
         return organizations;
     }
     async updateOrganization({ id, name }) {
-        console.log("Update Org in API");
-        const results = await this.organization.update({ name }, {
+        const resultsArray = await this.organization.update({ name }, {
             where: {
                 id
             }
         });
-        console.log(results);
-        return results[0];
+        const resultFind = await this.getOrganization({ id });
+        return resultFind.dataValues;
+    }
+    async deleteOrganization({ id }) {
+        const deleteResult = await this.organization.destroy({ where: { id } });
+        return deleteResult;
     }
 }
 exports.default = Organization;

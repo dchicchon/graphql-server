@@ -16,9 +16,7 @@ export default class Event {
         const [event, created] = await this.event.findOrCreate({
             where: { name, dateAndTime: dateAndTime, description, organizationId },
         });
-        // console.log(event)
         return event.dataValues
-        // return created ? event.dataValues : { message: "Event already created" };
     }
 
 
@@ -61,20 +59,21 @@ export default class Event {
         if (name) updateObject.name = name;
         if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
         if (description) updateObject.description = description
-        const results = await this.event.update(updateObject,
+        const updateResults = await this.event.update(updateObject,
             {
                 where: {
                     id
                 }
             });
         // Maybe do a quick find event to return 
-        return results[0]
+        const findResults = await this.getEvent({ id })
+        return findResults
     }
 
 
     async deleteEvent({ id }: Arguments) {
         const event = await this.event.destroy({ where: { id } });
-        return !!event;
+        return event;
     }
 
     async deleteEventByOrganizationId({ organizationId }: Arguments) {

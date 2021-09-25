@@ -9,18 +9,14 @@ const createOrganization = async (_, { name }, { dataSources }) => {
     return results;
 };
 const updateOrganization = async (_, { id, name }, { dataSources }) => {
-    console.log("Update Org in Resolvers");
     const results = await dataSources.api.organization.updateOrganization({ id, name });
-    console.log(results);
-    return {
-        success: results,
-    };
+    return results;
 };
 const deleteOrganization = async (_, { id }, { dataSources }) => {
-    const results = await dataSources.api.organization.deleteOrganization({ id });
-    return {
-        success: results
-    };
+    const deleteOrganizationResults = await dataSources.api.organization.deleteOrganization({ id });
+    const deleteLocationResults = await dataSources.api.location.deleteLocationByOrganizationId({ organizationId: id });
+    const deleteEventResults = await dataSources.api.event.deleteEventByOrganizationId({ organizationId: id });
+    return { success: !!deleteOrganizationResults };
 };
 const Organization = {
     locations: async ({ id }, _, { dataSources }) => dataSources.api.location.getAllLocationsByOrgId({ id }),

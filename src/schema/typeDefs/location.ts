@@ -44,6 +44,10 @@ export const typeDefs = gql`
       "A new address"
       address: String): Location!
     """Deletes a location"""
-    deleteLocation("Organization id to delete"id: ID!): Location!
+    deleteLocation("Organization id to delete"id: ID!): deleteLocationResponse!
+  }
+
+  type deleteLocationResponse {
+    success: Boolean
   }
 `;

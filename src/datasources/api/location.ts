@@ -103,9 +103,10 @@ export default class Location {
                         id
                     }
                 });
-                // console.log("results")
-                // console.log(results)
-                return results[0]
+
+                // now find this new location and return it
+                const findResults = await this.getLocation({ id })
+                return findResults
             }
         } else {
             const results = await this.location.update({
@@ -115,7 +116,8 @@ export default class Location {
                     id
                 }
             });
-            return results[0]
+            const findResults = await this.getLocation({ id })
+            return findResults
         }
 
 
@@ -123,7 +125,7 @@ export default class Location {
     }
     async deleteLocation({ id }: Arguments) {
         const location = await this.location.destroy({ where: { id } });
-        return !!location;
+        return location;
     }
 
     async deleteLocationByOrganizationId({ organizationId }: Arguments) {

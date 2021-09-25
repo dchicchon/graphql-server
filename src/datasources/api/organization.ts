@@ -55,7 +55,7 @@ export default class Organization {
         const resultFind = await this.getOrganization({ id })
         // might have to do a find to grab the organization 
         // and return it to the user
-        return resultFind.dataValues;
+        return resultFind;
     }
 
     async deleteOrganization({ id }: Arguments) {

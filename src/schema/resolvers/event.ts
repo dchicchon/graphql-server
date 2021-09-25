@@ -2,9 +2,20 @@ import { Arguments, DataSourceParent, } from '../../interfaces/Types'
 
 
 // Queries
-const event = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => dataSources.api.event.getEvent({ id })
-const events = async (_: any, { ids }: Arguments, { dataSources }: DataSourceParent) => dataSources.api.event.getEvents({ ids })
-const allEvents = async (_: any, __: any, { dataSources }: DataSourceParent) => dataSources.api.event.getAllEvents()
+const event = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
+
+    const results = await dataSources.api.event.getEvent({ id })
+    return results
+}
+const events = async (_: any, { ids }: Arguments, { dataSources }: DataSourceParent) => {
+
+    const results = await dataSources.api.event.getEvents({ ids })
+    return results
+}
+const allEvents = async (_: any, __: any, { dataSources }: DataSourceParent) => {
+    const results = await dataSources.api.event.getAllEvents()
+    return results
+}
 
 // Mutations
 const createEvent = async (_: any, { name, dateAndTime, description, organizationId }: Arguments, { dataSources }: DataSourceParent) => {
@@ -19,15 +30,19 @@ const createEvent = async (_: any, { name, dateAndTime, description, organizatio
 
 const updateEvent = async (_: any, { id, name, dateAndTime, description }: Arguments, { dataSources }: DataSourceParent) => {
     const results = await dataSources.api.event.updateEvent({ id, name, dateAndTime, description });
-    return {
-        success: results && results,
-    };
+    return results
 }
 
 const deleteEvent = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
-    const results = await dataSources.api.event.deleteEvent({ id });
+    const deleteResults = await dataSources.api.event.deleteEvent({ id });
+    const findResults = await dataSources.api.event.getEvent({ id })
+    if (findResults) {
+        return {
+            success: false
+        }
+    }
     return {
-        success: results && results
+        success: true
     };
 }
 
