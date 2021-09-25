@@ -10,10 +10,17 @@ This project was also developed using [Node.js](https://nodejs.org/en/). `Please
 version of Node.js installed before running this project`.
 
 ## Run
-To run this project, run the following command in the console
+To run this project, run the following commands in the console
+
+`Installs Dependencies`
 ```console
-npm install && npm start
+npm install
 ```
+`Starts Server`
+```console
+ npm start
+```
+
 
 ## Testing
 To test this project, run the following command in the console
