@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server'
-import * as Queries from '../testQueries'
+import * as Queries from '../testUtils/Queries'
 import { resolvers as organizationResolvers } from './organization'
 import { resolvers as locationResolvers } from './location'
 import { resolvers as eventResolvers } from './event'
@@ -13,24 +13,13 @@ import Organization from '../../datasources/api/organization'
 import Location from '../../datasources/api/location'
 import Event from '../../datasources/api/event'
 import { config } from 'dotenv'
+import { createTestServer } from '../testUtils/createTestServer'
 
 
 describe("Organization Resolvers", () => {
     let server: ApolloServer;
     beforeAll(async () => {
-        config()
-        const store = createTestStore()
-        const organizationAPI = new Organization(store.organization)
-        const locationAPI = new Location(store.location)
-        const eventAPI = new Event(store.event)
-        const dataSources = () => ({
-            api: new API(organizationAPI, locationAPI, eventAPI)
-        })
-        server = new ApolloServer({
-            typeDefs: [organizationDefs, locationDefs, eventDefs],
-            resolvers: [organizationResolvers, locationResolvers, eventResolvers, utilResolvers],
-            dataSources
-        })
+        server = await createTestServer()
         // maybe inject some data into the database beforehand and then delete afterwards
     })
 
