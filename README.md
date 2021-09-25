@@ -15,6 +15,12 @@ To run this project, run the following command in the console
 npm install && npm start
 ```
 
+## Testing
+To test this project, run the following command in the console
+```console
+npm test
+```
+
 Once run, visit the url [http://localhost:4000](http://localhost:4000) to begin querying and mutating the database.
 
 ## Data Structure
