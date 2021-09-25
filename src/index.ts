@@ -18,6 +18,9 @@ const store: Store = createStore(); // startup the database
 const organizationAPI = new Organization(store.organization)
 const locationAPI = new Location(store.location)
 const eventAPI = new Event(store.event)
+const plugins = [
+
+]
 const dataSources = () => ({
     api: new API(organizationAPI, locationAPI, eventAPI)
 })
@@ -28,16 +31,21 @@ const server = new ApolloServer({
     dataSources,
     plugins: [
         {
+
+            // Plugin to check when server starts up
             async serverWillStart() {
                 console.log("Server Starting Up")
             },
+
+            // Plugin To check Requests to GraphQL server
+            // use requestContext to access 
             async requestDidStart(requestContext) {
                 console.log("Request Started")
-                console.log(requestContext)
+                // console.log(requestContext)
                 return {
                     async parsingDidStart(requestContext) {
                         console.log("Parsing Started")
-                        // console.log(requestContext)
+                        console.log(requestContext)
                         return async (err) => {
                             if (err) {
                                 console.error(err)
@@ -48,7 +56,7 @@ const server = new ApolloServer({
                         //This end hook is unique in that it can receive an array of errors,
                         // which will contain every validation error that occurred.
                         console.log("Validation started")
-                        // console.log(requestContext)
+                        console.log(requestContext)
                         return async (errs) => {
                             if (errs) {
                                 errs.forEach(err => console.error(err))

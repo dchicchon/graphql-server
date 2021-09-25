@@ -34,14 +34,34 @@ const server = new apollo_server_1.ApolloServer({
             async serverWillStart() {
                 console.log("Server Starting Up");
             },
-            async requestDidStart() {
+            async requestDidStart(requestContext) {
                 console.log("Request Started");
+                console.log(requestContext);
                 return {
                     async parsingDidStart(requestContext) {
                         console.log("Parsing Started");
+                        return async (err) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                        };
                     },
                     async validationDidStart(requestContext) {
                         console.log("Validation started");
+                        return async (errs) => {
+                            if (errs) {
+                                errs.forEach(err => console.error(err));
+                            }
+                        };
+                    },
+                    async executionDidStart() {
+                        return {
+                            async executationDidEnd(err) {
+                                if (err) {
+                                    console.error(err);
+                                }
+                            }
+                        };
                     }
                 };
             }
