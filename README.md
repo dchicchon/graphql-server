@@ -10,9 +10,9 @@ This project was also developed using [Node.js](https://nodejs.org/en/). `Please
 version of Node.js installed before running this project`.
 
 ## Run
-To run this project, run the following command in the console
+To run this project, run the following commands in the console
 ```console
-npm install && npm start
+npm install -g ts-node && npm install && npm start
 ```
 
 ## Testing
