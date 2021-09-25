@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",

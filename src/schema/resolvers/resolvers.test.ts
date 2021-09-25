@@ -23,7 +23,7 @@ describe("Testing Jest", () => {
 
 // Make multiple tests for resolvers probably
 // Resolvers Test
-describe('resolvers', () => {
+describe('All Resolvers', () => {
     let server: ApolloServer;
 
     beforeAll(async () => {
@@ -44,20 +44,21 @@ describe('resolvers', () => {
     })
 
     afterAll(async () => {
-        // const result = await server.executeOperation({
-        //     query: Queries.GET_ALL_ORGANIZATIONS
-        // })
-        // for (const organization of result.data?.allOrganizations) {
-        //     await server.executeOperation({
-        //         query: Queries.DELETE_ORGANIZATION,
-        //         variables: {
-        //             id: organization.id
-        //         }
-        //     })
-        // }
-        // const result2 = await server.executeOperation({
-        //     query: Queries.GET_ALL_ORGANIZATIONS
-        // })
+        // Delete all remaining organizations
+        const result = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        })
+        for (const org of result.data?.allOrganizations) {
+            await server.executeOperation({
+                query: Queries.DELETE_ORGANIZATION,
+                variables: {
+                    id: org.id
+                }
+            })
+        }
+        const result2 = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        })
         // console.log(result2.data?.allOrganizations) // this should be 0
 
     })
@@ -72,11 +73,10 @@ describe('resolvers', () => {
 
         expect(result.errors).toBe(undefined)
         expect(result.data?.createOrganization.name).toBe("Polus")
-
     })
 
     it("Creates a Location", async () => {
-        expect.assertions(4)
+        expect.assertions(3)
 
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
@@ -105,7 +105,7 @@ describe('resolvers', () => {
         })
 
         expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations).toHaveLength(1)
+        // expect(findResult.data?.allOrganizations).toHaveLength(1)
         expect(createResult.errors).toBe(undefined)
         expect(createResult.data?.createLocation.name).toBe("Polus Headquarters")
     })
@@ -185,16 +185,7 @@ describe('resolvers', () => {
         expect(results.errors).toBe(undefined)
     })
 
-    it('Fetch Organizations by Ids', async () => {
-        expect.assertions(1)
 
-        const results = await server.executeOperation({
-            query: Queries.GET_ORGANIZATIONS,
-            variables: { ids: [1] }
-        })
-
-        expect(results.errors).toBe(undefined)
-    })
 
     it('Fetch Locations By Ids', async () => {
         expect.assertions(1)
@@ -218,17 +209,6 @@ describe('resolvers', () => {
         expect(results.errors).toBe(undefined)
     })
 
-    it('Fetch All Organizations', async () => {
-        expect.assertions(2)
-
-        const findResults = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
-        })
-
-        expect(findResults.errors).toBe(undefined)
-        expect(findResults.data?.allOrganizations).toHaveLength(1)
-
-    })
 
     it("Fetch All Locations", async () => {
         expect.assertions(2)
@@ -255,7 +235,7 @@ describe('resolvers', () => {
 
     // TESTS: UPDATE
     it("Updates an Organization", async () => {
-        expect.assertions(2)
+        expect.assertions(4)
         // console.log("Updating an Organization")
         // First find the first item in our database and update it
         const findResult = await server.executeOperation({
@@ -274,10 +254,20 @@ describe('resolvers', () => {
             }
         })
 
+        const revertResult = await server.executeOperation({
+            query: Queries.UPDATE_ORGANIZATION,
+            variables: {
+                id: organizationId,
+                name: "Polus"
+            }
+        })
+
         // console.log(updateResult)
 
         expect(updateResult.errors).toBe(undefined)
+        expect(findResult.data?.allOrganizations[0].name).toBe("Polus")
         expect(updateResult.data?.updateOrganization.name).toBe("Pola")
+        expect(revertResult.data?.updateOrganization.name).toBe("Polus")
     })
 
     it("Updates a Location", async () => {
@@ -330,7 +320,6 @@ describe('resolvers', () => {
 
 
     // TESTS: DELETE
-
     it("Create and Deletes an organization", async () => {
         expect.assertions(4)
 
@@ -354,7 +343,6 @@ describe('resolvers', () => {
         expect(createResult.data?.createOrganization.name).toBe("Google")
         expect(deleteResult.errors).toBe(undefined)
         expect(deleteResult.data?.deleteOrganization).toEqual(expectedResult)
-
     })
 
     it("Creates and Deletes a Location", async () => {
@@ -430,29 +418,6 @@ describe('resolvers', () => {
         expect(deleteResult.data?.deleteEvent).toEqual(expectedResult)
     })
 
-    it("Delete the first Organization", async () => {
-        expect.assertions(4)
-
-        const expectedResult = {
-            success: true
-        }
-
-        const findResult = await server.executeOperation({
-            query: Queries.GET_ALL_ORGANIZATIONS
-        })
-
-        const organizationId = findResult.data?.allOrganizations[0].id
-
-        const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_ORGANIZATION,
-            variables: { id: organizationId }
-        })
-
-        expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations).toHaveLength(1)
-        expect(deleteResult.errors).toBe(undefined)
-        expect(deleteResult.data?.deleteOrganization).toEqual(expectedResult)
-    })
 
 
 })
