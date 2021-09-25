@@ -17,8 +17,6 @@ export const GET_ORGANIZATION = gql`
               name
               createdAt
               updatedAt
-              # locations
-              # events
           }
       }
 `;

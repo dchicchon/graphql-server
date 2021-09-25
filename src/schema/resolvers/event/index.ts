@@ -1,4 +1,4 @@
-import { Arguments, DataSourceParent, } from '../../interfaces/Types'
+import { Arguments, DataSourceParent, } from '../../../interfaces/Types'
 
 
 // Queries

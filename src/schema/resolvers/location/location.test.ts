@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server'
-import { createTestServer } from '../testUtils/createTestServer'
-import * as LocationQueries from '../testUtils/locationQueries'
-import * as OrganizationQueries from '../testUtils/organizationQueries'
+import { createTestServer } from '../../testUtils/createTestServer'
+import * as LocationQueries from '../../testUtils/locationQueries'
+import * as OrganizationQueries from '../../testUtils/organizationQueries'
 
 
 // Make multiple tests for resolvers probably
