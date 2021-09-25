@@ -39,16 +39,17 @@ class Event {
             updateObject.dateAndTime = new Date(dateAndTime);
         if (description)
             updateObject.description = description;
-        const results = await this.event.update(updateObject, {
+        const updateResults = await this.event.update(updateObject, {
             where: {
                 id
             }
         });
-        return results[0];
+        const findResults = await this.getEvent({ id });
+        return findResults;
     }
     async deleteEvent({ id }) {
         const event = await this.event.destroy({ where: { id } });
-        return !!event;
+        return event;
     }
     async deleteEventByOrganizationId({ organizationId }) {
         const deleteResult = await this.event.destroy({ where: { organizationId } });

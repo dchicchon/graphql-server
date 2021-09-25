@@ -43,7 +43,7 @@ describe("Testing Jest", () => {
         expect(item).toBe(1);
     });
 });
-describe('resolvers', () => {
+describe('All Resolvers', () => {
     let server;
     beforeAll(async () => {
         (0, dotenv_1.config)();
@@ -61,6 +61,21 @@ describe('resolvers', () => {
         });
     });
     afterAll(async () => {
+        var _a;
+        const result = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        for (const org of (_a = result.data) === null || _a === void 0 ? void 0 : _a.allOrganizations) {
+            await server.executeOperation({
+                query: Queries.DELETE_ORGANIZATION,
+                variables: {
+                    id: org.id
+                }
+            });
+        }
+        const result2 = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
     });
     it("Create an Organization", async () => {
         var _a;
@@ -73,45 +88,42 @@ describe('resolvers', () => {
         expect((_a = result.data) === null || _a === void 0 ? void 0 : _a.createOrganization.name).toBe("Polus");
     });
     it("Creates a Location", async () => {
-        var _a;
-        expect.assertions(2);
-        const expectedResult = {
-            name: "Polus Headquarters",
-            address: "205 W 109th Street, New York, New York 100025",
-            latitude: "40.802731",
-            longitude: "-73.96481059999999",
-            organizationId: "1",
-        };
-        const result = await server.executeOperation({
+        var _a, _b;
+        expect.assertions(3);
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        const organizationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id;
+        const createResult = await server.executeOperation({
             query: Queries.CREATE_LOCATION,
             variables: {
                 name: "Polus Headquarters",
                 address: "205 W 109th Street, New York, New York 100025",
-                organizationId: 1,
+                organizationId: organizationId,
             }
         });
-        expect(result.errors).toBe(undefined);
-        expect((_a = result.data) === null || _a === void 0 ? void 0 : _a.createLocation).toEqual(expectedResult);
+        expect(findResult.errors).toBe(undefined);
+        expect(createResult.errors).toBe(undefined);
+        expect((_b = createResult.data) === null || _b === void 0 ? void 0 : _b.createLocation.name).toBe("Polus Headquarters");
     });
     it("Creates an Event", async () => {
-        var _a;
+        var _a, _b;
         expect.assertions(2);
-        const expectedResult = {
-            name: "Party!",
-            description: "A gathering of friends",
-            organizationId: "1"
-        };
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        const organizationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id;
         const eventResult = await server.executeOperation({
             query: Queries.CREATE_EVENT,
             variables: {
                 name: "Party!",
-                dateAndTime: new Date(),
+                dateAndTime: new Date('10/12/2021'),
                 description: "A gathering of friends",
-                organizationId: 1
+                organizationId: organizationId,
             }
         });
         expect(eventResult.errors).toBe(undefined);
-        expect((_a = eventResult.data) === null || _a === void 0 ? void 0 : _a.createEvent).toEqual(expectedResult);
+        expect((_b = eventResult.data) === null || _b === void 0 ? void 0 : _b.createEvent.name).toBe("Party!");
     });
     it('Fetch Organization by Id', async () => {
         expect.assertions(1);
@@ -137,82 +149,203 @@ describe('resolvers', () => {
         });
         expect(results.errors).toBe(undefined);
     });
-    it('Fetch Organizations by Ids', async () => {
+    it('Fetches Organizations by Id', async () => {
+        var _a;
         expect.assertions(1);
-        const results = await server.executeOperation({
-            query: Queries.GET_ORGANIZATIONS,
-            variables: { ids: [1] }
-        });
-        expect(results.errors).toBe(undefined);
-    });
-    it('Fetch Locations By Ids', async () => {
-        expect.assertions(1);
-        const results = await server.executeOperation({
-            query: Queries.GET_LOCATIONS,
-            variables: { ids: [1] }
-        });
-        expect(results.errors).toBe(undefined);
-    });
-    it('Fetch Events By Ids', async () => {
-        expect.assertions(1);
-        const results = await server.executeOperation({
-            query: Queries.GET_EVENTS,
-            variables: { ids: [1] }
-        });
-        expect(results.errors).toBe(undefined);
-    });
-    it('Fetch All Organizations', async () => {
-        expect.assertions(1);
-        const results = await server.executeOperation({
+        const findAllResult = await server.executeOperation({
             query: Queries.GET_ALL_ORGANIZATIONS
         });
-        expect(results.errors).toBe(undefined);
+        const organizationIds = (_a = findAllResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations.map((organization) => organization.id);
+        const findResults = await server.executeOperation({
+            query: Queries.GET_ORGANIZATIONS,
+            variables: { id: [organizationIds] }
+        });
+        expect(findResults.errors).toBe(undefined);
     });
-    it("Fetch All Locations", async () => {
+    it('Fetch Locations By Ids', async () => {
+        var _a;
         expect.assertions(1);
-        const results = await server.executeOperation({
+        const findAllResult = await server.executeOperation({
             query: Queries.GET_ALL_LOCATIONS
         });
-        expect(results.errors).toBe(undefined);
+        const locationIds = (_a = findAllResult.data) === null || _a === void 0 ? void 0 : _a.allLocations.map((location) => location.id);
+        const findResults = await server.executeOperation({
+            query: Queries.GET_LOCATIONS,
+            variables: { ids: locationIds }
+        });
+        expect(findResults.errors).toBe(undefined);
     });
-    it("Fetch All Events", async () => {
+    it('Fetch Events By Ids', async () => {
+        var _a;
         expect.assertions(1);
-        const results = await server.executeOperation({
+        const findAllResult = await server.executeOperation({
             query: Queries.GET_ALL_EVENTS
         });
-        expect(results.errors).toBe(undefined);
+        const eventIds = (_a = findAllResult.data) === null || _a === void 0 ? void 0 : _a.allEvents.map((event) => event.id);
+        const findResults = await server.executeOperation({
+            query: Queries.GET_EVENTS,
+            variables: { ids: eventIds }
+        });
+        expect(findResults.errors).toBe(undefined);
+    });
+    it("Fetch All Locations", async () => {
+        var _a;
+        expect.assertions(2);
+        const findResults = await server.executeOperation({
+            query: Queries.GET_ALL_LOCATIONS
+        });
+        expect(findResults.errors).toBe(undefined);
+        expect((_a = findResults.data) === null || _a === void 0 ? void 0 : _a.allLocations).toHaveLength(1);
+    });
+    it("Fetch All Events", async () => {
+        var _a;
+        expect.assertions(2);
+        const findResults = await server.executeOperation({
+            query: Queries.GET_ALL_EVENTS
+        });
+        expect(findResults.errors).toBe(undefined);
+        expect((_a = findResults.data) === null || _a === void 0 ? void 0 : _a.allEvents).toHaveLength(1);
     });
     it("Updates an Organization", async () => {
-        var _a, _b;
-        expect.assertions(2);
-        console.log("Updating an Organization");
+        var _a, _b, _c, _d;
+        expect.assertions(4);
         const findResult = await server.executeOperation({
             query: Queries.GET_ALL_ORGANIZATIONS,
         });
+        const organizationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id;
         const updateResult = await server.executeOperation({
             query: Queries.UPDATE_ORGANIZATION,
             variables: {
-                id: parseInt((_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id),
+                id: organizationId,
                 name: "Pola"
             }
         });
+        const revertResult = await server.executeOperation({
+            query: Queries.UPDATE_ORGANIZATION,
+            variables: {
+                id: organizationId,
+                name: "Polus"
+            }
+        });
         expect(updateResult.errors).toBe(undefined);
-        expect((_b = updateResult.data) === null || _b === void 0 ? void 0 : _b.updateOrganization.name).toBe("Pola");
+        expect((_b = findResult.data) === null || _b === void 0 ? void 0 : _b.allOrganizations[0].name).toBe("Polus");
+        expect((_c = updateResult.data) === null || _c === void 0 ? void 0 : _c.updateOrganization.name).toBe("Pola");
+        expect((_d = revertResult.data) === null || _d === void 0 ? void 0 : _d.updateOrganization.name).toBe("Polus");
     });
-    it("Delete the first Organization", async () => {
-        var _a, _b;
-        expect.assertions(2);
+    it("Updates a Location", async () => {
+        var _a, _b, _c;
+        expect.assertions(4);
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        const locationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].locations[0].id;
+        const updateResult = await server.executeOperation({
+            query: Queries.UPDATE_LOCATION,
+            variables: {
+                name: "Polus Resort",
+                id: locationId,
+            }
+        });
+        expect(findResult.errors).toBe(undefined);
+        expect((_b = findResult.data) === null || _b === void 0 ? void 0 : _b.allOrganizations[0].locations[0].name).toBe("Polus Headquarters");
+        expect(updateResult.errors).toBe(undefined);
+        expect((_c = updateResult.data) === null || _c === void 0 ? void 0 : _c.updateLocation.name).toBe("Polus Resort");
+    });
+    it("Updates an Event", async () => {
+        var _a, _b, _c;
+        expect.assertions(4);
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        const eventId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].events[0].id;
+        const updateResult = await server.executeOperation({
+            query: Queries.UPDATE_EVENT,
+            variables: {
+                id: eventId,
+                name: "Birthday",
+                dateAndTime: new Date('12/18/2021'),
+                description: "It's my birthday!",
+            }
+        });
+        expect(findResult.errors).toBe(undefined);
+        expect((_b = findResult.data) === null || _b === void 0 ? void 0 : _b.allOrganizations[0].events[0].name).toBe("Party!");
+        expect(updateResult.errors).toBe(undefined);
+        expect((_c = updateResult.data) === null || _c === void 0 ? void 0 : _c.updateEvent.name).toBe("Birthday");
+    });
+    it("Create and Deletes an organization", async () => {
+        var _a, _b, _c;
+        expect.assertions(4);
+        const createResult = await server.executeOperation({
+            query: Queries.CREATE_ORGANIZATION,
+            variables: { name: "Google" }
+        });
+        const expectedResult = {
+            success: true
+        };
+        const organizationId = (_a = createResult.data) === null || _a === void 0 ? void 0 : _a.createOrganization.id;
+        const deleteResult = await server.executeOperation({
+            query: Queries.DELETE_ORGANIZATION,
+            variables: { id: organizationId }
+        });
+        expect(createResult.errors).toBe(undefined);
+        expect((_b = createResult.data) === null || _b === void 0 ? void 0 : _b.createOrganization.name).toBe("Google");
+        expect(deleteResult.errors).toBe(undefined);
+        expect((_c = deleteResult.data) === null || _c === void 0 ? void 0 : _c.deleteOrganization).toEqual(expectedResult);
+    });
+    it("Creates and Deletes a Location", async () => {
+        var _a, _b, _c;
+        expect.assertions(4);
         const expectedResult = {
             success: true
         };
         const findResult = await server.executeOperation({
             query: Queries.GET_ALL_ORGANIZATIONS
         });
-        const deleteResult = await server.executeOperation({
-            query: Queries.DELETE_ORGANIZATION,
-            variables: { id: (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id }
+        const organizationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id;
+        const createResult = await server.executeOperation({
+            query: Queries.CREATE_LOCATION,
+            variables: {
+                name: "Company Island",
+                address: "23 Happy Valley Rd, Pembroke, Bermuda",
+                organizationId: organizationId,
+            }
         });
+        const locationId = (_b = createResult.data) === null || _b === void 0 ? void 0 : _b.createLocation.id;
+        const deleteResult = await server.executeOperation({
+            query: Queries.DELETE_LOCATION,
+            variables: { id: locationId }
+        });
+        expect(findResult.errors).toBe(undefined);
+        expect(createResult.errors).toBe(undefined);
         expect(deleteResult.errors).toBe(undefined);
-        expect((_b = deleteResult.data) === null || _b === void 0 ? void 0 : _b.deleteOrganization).toEqual(expectedResult);
+        expect((_c = deleteResult.data) === null || _c === void 0 ? void 0 : _c.deleteLocation).toEqual(expectedResult);
+    });
+    it("Creates and Deletes an Event", async () => {
+        var _a, _b, _c;
+        const expectedResult = {
+            success: true
+        };
+        const findResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        });
+        const organizationId = (_a = findResult.data) === null || _a === void 0 ? void 0 : _a.allOrganizations[0].id;
+        const createResult = await server.executeOperation({
+            query: Queries.CREATE_EVENT,
+            variables: {
+                name: "Stockholder Meeting",
+                dateAndTime: new Date('11/11/2021'),
+                description: "Gathering all of the stockholders in order to talk about the company's future",
+                organizationId: organizationId,
+            }
+        });
+        const eventId = (_b = createResult.data) === null || _b === void 0 ? void 0 : _b.createEvent.id;
+        const deleteResult = await server.executeOperation({
+            query: Queries.DELETE_EVENT,
+            variables: { id: eventId }
+        });
+        expect(findResult.errors).toBe(undefined);
+        expect(createResult.errors).toBe(undefined);
+        expect(deleteResult.errors).toBe(undefined);
+        expect((_c = deleteResult.data) === null || _c === void 0 ? void 0 : _c.deleteEvent).toEqual(expectedResult);
     });
 });

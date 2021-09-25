@@ -34,7 +34,7 @@ class Organization {
             }
         });
         const resultFind = await this.getOrganization({ id });
-        return resultFind.dataValues;
+        return resultFind;
     }
     async deleteOrganization({ id }) {
         const deleteResult = await this.organization.destroy({ where: { id } });

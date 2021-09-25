@@ -92,7 +92,8 @@ class Location {
                         id
                     }
                 });
-                return results[0];
+                const findResults = await this.getLocation({ id });
+                return findResults;
             }
         }
         else {
@@ -103,12 +104,13 @@ class Location {
                     id
                 }
             });
-            return results[0];
+            const findResults = await this.getLocation({ id });
+            return findResults;
         }
     }
     async deleteLocation({ id }) {
         const location = await this.location.destroy({ where: { id } });
-        return !!location;
+        return location;
     }
     async deleteLocationByOrganizationId({ organizationId }) {
         const deleteResult = await this.location.destroy({ where: { organizationId } });

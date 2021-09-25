@@ -47,6 +47,10 @@ exports.typeDefs = (0, apollo_server_1.gql) `
       "A new address"
       address: String): Location!
     """Deletes a location"""
-    deleteLocation("Organization id to delete"id: ID!): Location!
+    deleteLocation("Organization id to delete"id: ID!): deleteLocationResponse!
+  }
+
+  type deleteLocationResponse {
+    success: Boolean
   }
 `;

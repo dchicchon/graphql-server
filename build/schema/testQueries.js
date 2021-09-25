@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DELETE_ORGANIZATION = exports.UPDATE_ORGANIZATION = exports.GET_ALL_EVENTS = exports.GET_ALL_LOCATIONS = exports.GET_ALL_ORGANIZATIONS = exports.GET_EVENTS = exports.GET_LOCATIONS = exports.GET_ORGANIZATIONS = exports.GET_EVENT = exports.GET_LOCATION = exports.GET_ORGANIZATION = exports.CREATE_EVENT = exports.CREATE_LOCATION = exports.CREATE_ORGANIZATION = void 0;
+exports.DELETE_EVENT = exports.DELETE_LOCATION = exports.DELETE_ORGANIZATION = exports.UPDATE_EVENT = exports.UPDATE_LOCATION = exports.UPDATE_ORGANIZATION = exports.GET_ALL_EVENTS = exports.GET_ALL_LOCATIONS = exports.GET_ALL_ORGANIZATIONS = exports.GET_EVENTS = exports.GET_LOCATIONS = exports.GET_ORGANIZATIONS = exports.GET_EVENT = exports.GET_LOCATION = exports.GET_ORGANIZATION = exports.CREATE_EVENT = exports.CREATE_LOCATION = exports.CREATE_ORGANIZATION = void 0;
 const apollo_server_1 = require("apollo-server");
 exports.CREATE_ORGANIZATION = (0, apollo_server_1.gql) `
   mutation CreateOrganization($name: String!) {
       createOrganization(name: $name) {
-        #   id
+          id
           name
-        #   createdAt
-        #   updatedAt
+          createdAt
+          updatedAt
       }
   }
 `;
@@ -18,7 +18,7 @@ exports.CREATE_LOCATION = (0, apollo_server_1.gql) `
       $address: String!, 
       $organizationId: ID!) {
           createLocation(name: $name, address: $address, organizationId: $organizationId) {
-            #   id
+              id
               name
               address
               latitude
@@ -36,11 +36,11 @@ exports.CREATE_EVENT = (0, apollo_server_1.gql) `
       $description: String! ,
       $organizationId: ID!) {
           createEvent(name: $name, dateAndTime: $dateAndTime, description: $description, organizationId: $organizationId) {
-            #   id
+              id
               name
               description
               organizationId
-              # dateAndTime
+              dateAndTime
               # createdAt
               # updatedAt
           }
@@ -92,8 +92,6 @@ exports.GET_ORGANIZATIONS = (0, apollo_server_1.gql) `
           name
           createdAt
           updatedAt
-          # locations
-          # events
       }
   }
 `;
@@ -130,8 +128,14 @@ exports.GET_ALL_ORGANIZATIONS = (0, apollo_server_1.gql) `
           name
           createdAt
           updatedAt
-          # locations
-          # events
+          locations {
+            id
+            name
+          }
+          events {
+            id
+            name
+          }
       }
   }
 `;
@@ -173,10 +177,51 @@ exports.UPDATE_ORGANIZATION = (0, apollo_server_1.gql) `
       }
   }
 `;
+exports.UPDATE_LOCATION = (0, apollo_server_1.gql) `
+  mutation UpdateLocation($id: ID!, $name: String, $address: String) {
+    updateLocation(id: $id, name: $name, address: $address) {
+        name
+        address
+        organizationId
+    }
+  }
+`;
+exports.UPDATE_EVENT = (0, apollo_server_1.gql) `
+  mutation UpdateEvent(
+      $id: ID!
+      $name: String, 
+      $dateAndTime: Date ,
+      $description: String) {
+          updateEvent(id: $id, name: $name, dateAndTime: $dateAndTime, description: $description) {
+            #   id
+              name
+              description
+              organizationId
+              dateAndTime
+              # createdAt
+              # updatedAt
+          }
+
+  }
+`;
 exports.DELETE_ORGANIZATION = (0, apollo_server_1.gql) `
   mutation DeleteOrganization($id: ID!) {
       deleteOrganization(id: $id) {
           success
       }
+  }
+`;
+exports.DELETE_LOCATION = (0, apollo_server_1.gql) `
+  mutation DeleteLocation($id: ID!) {
+    deleteLocation(id: $id) {
+      success
+    }
+  }
+`;
+exports.DELETE_EVENT = (0, apollo_server_1.gql) `
+  mutation DeleteEvent($id: ID!) {
+    deleteEvent(id: $id) {
+      success
+    }
   }
 `;

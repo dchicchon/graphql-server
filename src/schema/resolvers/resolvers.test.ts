@@ -185,28 +185,59 @@ describe('All Resolvers', () => {
         expect(results.errors).toBe(undefined)
     })
 
+    it('Fetches Organizations by Id', async () => {
+        expect.assertions(1)
+
+        const findAllResult = await server.executeOperation({
+            query: Queries.GET_ALL_ORGANIZATIONS
+        })
+
+        const organizationIds = findAllResult.data?.allOrganizations.map((organization: any) => organization.id)
+
+        const findResults = await server.executeOperation({
+            query: Queries.GET_ORGANIZATIONS,
+            variables: { id: [organizationIds] }
+        })
+
+        expect(findResults.errors).toBe(undefined)
+        // expect(findResults.data?.organizations).
+    })
+
 
 
     it('Fetch Locations By Ids', async () => {
         expect.assertions(1)
 
-        const results = await server.executeOperation({
-            query: Queries.GET_LOCATIONS,
-            variables: { ids: [1] }
+        const findAllResult = await server.executeOperation({
+            query: Queries.GET_ALL_LOCATIONS
         })
 
-        expect(results.errors).toBe(undefined)
+        const locationIds = findAllResult.data?.allLocations.map((location: any) => location.id)
+
+        const findResults = await server.executeOperation({
+            query: Queries.GET_LOCATIONS,
+            variables: { ids: locationIds }
+        })
+
+        expect(findResults.errors).toBe(undefined)
+        // expect(findResults.data?.locations).toHaveLength(locationIds.length)
     })
 
     it('Fetch Events By Ids', async () => {
         expect.assertions(1)
 
-        const results = await server.executeOperation({
+        const findAllResult = await server.executeOperation({
+            query: Queries.GET_ALL_EVENTS
+        })
+        const eventIds = findAllResult.data?.allEvents.map((event: any) => event.id)
+
+        const findResults = await server.executeOperation({
             query: Queries.GET_EVENTS,
-            variables: { ids: [1] }
+            variables: { ids: eventIds }
         })
 
-        expect(results.errors).toBe(undefined)
+        expect(findResults.errors).toBe(undefined)
+        // expect(findResults.data?.events).toHaveLength(eventIds.length)
     })
 
 

@@ -50,6 +50,10 @@ exports.typeDefs = (0, apollo_server_1.gql) `
       "A new description"
       description: String): Event!
     """Deletes an event"""
-    deleteEvent("Organization id to delete"id: ID!): Event!
+    deleteEvent("Organization id to delete"id: ID!): deleteEventResponse!
+  }
+
+  type deleteEventResponse {
+    success: Boolean
   }
 `;
