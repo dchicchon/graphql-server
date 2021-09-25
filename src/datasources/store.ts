@@ -87,7 +87,7 @@ export const createStore = () => {
 
 export const createTestStore = () => {
   const db = new Sequelize({
-    logging: false,
+    logging: true,
     dialect: "sqlite",
     storage: "./testStorage.sqlite",
   });
