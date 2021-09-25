@@ -8,7 +8,7 @@ import { typeDefs as organizationDefs } from '../typeDefs/organization'
 import { typeDefs as locationDefs } from '../typeDefs/location'
 import { typeDefs as eventDefs } from '../typeDefs/event'
 import API from '../../datasources/api'
-import createStore from '../../datasources/store'
+import { createTestStore } from '../../datasources/store'
 import Organization from '../../datasources/api/organization'
 import Location from '../../datasources/api/location'
 import Event from '../../datasources/api/event'
@@ -22,7 +22,7 @@ describe('resolvers', () => {
     let locationId: any;
     beforeAll(async () => {
         config()
-        const store = createStore()
+        const store = createTestStore()
         const organizationAPI = new Organization(store.organization)
         const locationAPI = new Location(store.location)
         const eventAPI = new Event(store.event)
@@ -34,6 +34,9 @@ describe('resolvers', () => {
             resolvers: [organizationResolvers, locationResolvers, eventResolvers, utilResolvers],
             dataSources
         })
+
+        // delete all data if there is anything
+
 
         // create some data here
         const createOrganizationResult = await server.executeOperation({
@@ -155,5 +158,4 @@ describe('resolvers', () => {
         expect(deleteResult.errors).toBe(undefined)
         expect(deleteResult.data?.deleteLocation).toEqual(expectedResult)
     })
-
 })

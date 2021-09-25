@@ -8,7 +8,7 @@ import { typeDefs as organizationDefs } from '../typeDefs/organization'
 import { typeDefs as locationDefs } from '../typeDefs/location'
 import { typeDefs as eventDefs } from '../typeDefs/event'
 import API from '../../datasources/api'
-import createStore from '../../datasources/store'
+import { createTestStore } from '../../datasources/store'
 import Organization from '../../datasources/api/organization'
 import Location from '../../datasources/api/location'
 import Event from '../../datasources/api/event'
@@ -20,7 +20,7 @@ describe('All Resolvers', () => {
 
     beforeAll(async () => {
         config()
-        const store = createStore()
+        const store = createTestStore()
         const organizationAPI = new Organization(store.organization)
         const locationAPI = new Location(store.location)
         const eventAPI = new Event(store.event)
@@ -46,7 +46,6 @@ describe('All Resolvers', () => {
                 organizationId,
             }
         })
-
         eventId = createEventResult.data?.createEvent.id
         // maybe inject some data into the database beforehand and then delete afterwards
     })
@@ -116,7 +115,6 @@ describe('All Resolvers', () => {
 
         expect(results.errors).toBe(undefined)
     })
-
 
     it("Fetch All Events", async () => {
         expect.assertions(2)

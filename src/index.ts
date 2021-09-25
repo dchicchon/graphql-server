@@ -8,7 +8,7 @@ import { resolvers as locationResolvers } from './schema/resolvers/location'
 import { resolvers as eventResolvers } from './schema/resolvers/event'
 import { resolvers as utilResolvers } from './schema/resolvers/util'
 import { Store } from './interfaces/Types'
-import createStore from './datasources/store'
+import { createStore } from './datasources/store'
 import API from './datasources/api'
 import Organization from './datasources/api/organization'
 import Location from './datasources/api/location'
@@ -29,6 +29,5 @@ const server = new ApolloServer({
 })
 
 server.listen().then(({ url }) => {
-    // eslint-disable-next-line no-console
     console.log("Server ready at", url)
 })
