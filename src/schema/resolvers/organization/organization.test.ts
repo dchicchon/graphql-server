@@ -7,7 +7,6 @@ describe("Organization Resolvers", () => {
     let server: ApolloServer;
     beforeAll(async () => {
         server = await createTestServer()
-        // maybe inject some data into the database beforehand and then delete afterwards
     })
 
     afterAll(async () => {
