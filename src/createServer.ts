@@ -27,54 +27,6 @@ export const createServer = () => {
         typeDefs: [organizationDefs, locationDefs, eventDefs],
         resolvers: [organizationResolvers, locationResolvers, eventResolvers, utilResolvers],
         dataSources,
-        plugins: [
-            // {
-
-            //     // Plugin to check when server starts up
-            //     async serverWillStart() {
-            //         console.log("Server Starting Up")
-            //     },
-
-            //     // Plugin To check Requests to GraphQL server
-            //     // use requestContext to access 
-            //     async requestDidStart(requestContext) {
-            //         console.log("Request Started")
-            //         // console.log(requestContext)
-            //         return {
-            //             async parsingDidStart(requestContext) {
-            //                 console.log("Parsing Started")
-            //                 console.log(requestContext)
-            //                 return async (err) => {
-            //                     if (err) {
-            //                         console.error(err)
-            //                     }
-            //                 }
-            //             },
-            //             async validationDidStart(requestContext) {
-            //                 //This end hook is unique in that it can receive an array of errors,
-            //                 // which will contain every validation error that occurred.
-            //                 console.log("Validation started")
-            //                 console.log(requestContext)
-            //                 return async (errs) => {
-            //                     if (errs) {
-            //                         errs.forEach(err => console.error(err))
-            //                     }
-            //                 }
-            //             },
-            //             async executionDidStart() {
-            //                 return {
-            //                     async executationDidEnd(err) {
-            //                         if (err) {
-            //                             console.error(err)
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-
-            // }
-        ]
     })
     return server
 }

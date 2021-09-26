@@ -29,7 +29,6 @@ const createServer = () => {
         typeDefs: [organization_1.typeDefs, location_1.typeDefs, event_1.typeDefs],
         resolvers: [organization_2.resolvers, location_2.resolvers, event_2.resolvers, util_1.resolvers],
         dataSources,
-        plugins: []
     });
     return server;
 };
