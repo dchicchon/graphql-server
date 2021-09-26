@@ -13,7 +13,6 @@ import Location from './datasources/api/location'
 import Event from './datasources/api/event'
 import API from './datasources/api'
 
-
 const store: Store = createStore(); // startup the database
 
 const organizationAPI = new Organization(store.organization)
@@ -76,7 +75,6 @@ export const createServer = () => {
 
             // }
         ]
-
     })
     return server
 }
