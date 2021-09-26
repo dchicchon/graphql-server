@@ -7,6 +7,11 @@
         "rootDir": "./src"
     },
     "exclude": [
-        "jest.config.ts"
+        "jest.config.ts",
+        "src/schema/resolvers/resolvers.test.ts",
+        "src/schema/resolvers/event/event.test.ts",
+        "src/schema/resolvers/organization/organization.test.ts",
+        "src/schema/resolvers/location/location.test.ts"
+
     ]
 }

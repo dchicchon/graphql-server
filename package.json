@@ -3,8 +3,10 @@
   "version": "1.5.0",
   "description": "Basic GraphQL Server made with TypeScript",
   "scripts": {
+    "prebuild": "npx rimraf build",
     "build": "tsc",
-    "start": "nodemon",
+    "start": "node ./build/index.js",
+    "dev": "nodemon",
     "test": "jest --runInBand"
   },
   "keywords": [],
