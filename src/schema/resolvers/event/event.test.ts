@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server'
 import { createTestServer } from '../../testUtils/createTestServer'
 import * as EventQueries from '../../testUtils/eventQueries'
 import * as OrganizationQueries from '../../testUtils/organizationQueries'
-import { CreateEventArguments, DeleteEventArguments, FindEventArguments, UpdateEventArguments } from '../../../interfaces/EventTypes'
+import { CreateEventArguments, DeleteEventArguments, EventType, FindEventArguments, UpdateEventArguments } from '../../../interfaces/EventTypes'
 import { CreateOrganizationArguments } from '../../../interfaces/OrganizationTypes'
 
 describe('All Resolvers', () => {
@@ -74,8 +74,9 @@ describe('All Resolvers', () => {
             variables: newEvent
         })
 
+        const event: EventType = eventResult.data?.createEvent
         expect(eventResult.errors).toBe(undefined)
-        expect(eventResult.data?.createEvent.name).toBe("Mark's Birthday")
+        expect(event.name).toBe("Mark's Birthday")
 
     })
 
@@ -87,12 +88,13 @@ describe('All Resolvers', () => {
             variables: findEvent
         })
 
+        const event: EventType = results.data?.event
         expect(results.errors).toBe(undefined)
-        expect(results.data?.event.name).toBe("Expunge User Data")
+        expect(event.name).toBe("Expunge User Data")
     })
 
     it('Fetch Events By Ids', async () => {
-        expect.assertions(1)
+        expect.assertions(2)
         const findEvents: FindEventArguments = {
             ids: [eventId]
         }
@@ -101,7 +103,9 @@ describe('All Resolvers', () => {
             variables: findEvents
         })
 
+        const events: Array<EventType> = results.data?.events
         expect(results.errors).toBe(undefined)
+        expect(events).toHaveLength(1)
     })
 
     it("Fetch All Events", async () => {
@@ -111,8 +115,10 @@ describe('All Resolvers', () => {
             query: EventQueries.GET_ALL_EVENTS
         })
 
+        const events: Array<EventType> = findResults.data?.allEvents
+
         expect(findResults.errors).toBe(undefined)
-        expect(findResults.data?.allEvents).toHaveLength(2)
+        expect(events).toHaveLength(2)
 
     })
 
@@ -131,9 +137,10 @@ describe('All Resolvers', () => {
             variables: updateEvent
         })
 
+        const event: EventType = updateResult.data?.updateEvent
 
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateEvent.name).toBe("Not Expunging Data")
+        expect(event.name).toBe("Not Expunging Data")
     })
 
     it("Partially Updates an Event", async () => {
@@ -149,20 +156,25 @@ describe('All Resolvers', () => {
             variables: updateEvent
         })
 
+        const event: EventType = updateResult.data?.updateEvent;
+
         const updateEvent2: UpdateEventArguments = {
             id: eventId,
             name: "Expunge Data Party",
         }
+
         const updateResult2 = await server.executeOperation({
             query: EventQueries.UPDATE_EVENT,
             variables: updateEvent2
         })
 
+        const event2: EventType = updateResult2.data?.updateEvent
+
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateEvent.name).toBe("Okay we're Expunging Data")
+        expect(event.name).toBe("Okay we're Expunging Data")
 
         expect(updateResult2.errors).toBe(undefined)
-        expect(updateResult2.data?.updateEvent.name).toBe("Expunge Data Party")
+        expect(event2.name).toBe("Expunge Data Party")
 
     })
 
@@ -184,10 +196,10 @@ describe('All Resolvers', () => {
             variables: createEvent
         })
 
-        const eventId = createResult.data?.createEvent.id
+        const event: EventType = createResult.data?.createEvent
 
         const deleteEvent: DeleteEventArguments = {
-            id: eventId
+            id: event.id
         }
 
         const deleteResult = await server.executeOperation({

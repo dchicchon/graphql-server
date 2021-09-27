@@ -1,4 +1,13 @@
 import { Arguments } from "./Types";
+
+export interface LocationType {
+    id: number,
+    name: string,
+    address: string,
+    latitude: number,
+    longitude: number,
+    organizationId: number
+}
 export interface FindLocationArguments extends Arguments {
     organizationId?: number
 }

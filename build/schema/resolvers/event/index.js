@@ -39,7 +39,10 @@ const deleteEvent = async (_, { id }, { dataSources }) => {
     };
 };
 const Event = {
-    organization: async ({ organizationId }, _, { dataSources }) => dataSources.api.organization.getOrganization({ id: organizationId })
+    organization: async ({ organizationId }, _, { dataSources }) => {
+        const results = await dataSources.api.organization.getOrganization({ id: organizationId });
+        return results;
+    }
 };
 exports.resolvers = {
     Query: {

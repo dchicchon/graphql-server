@@ -1,5 +1,13 @@
 import { Arguments } from "./Types";
 
+export interface EventType {
+    id: number,
+    name: string,
+    dateAndTime: Date,
+    organizationId: number,
+    description: string
+}
+
 export interface FindEventArguments extends Arguments {
     organizationId?: number
 }

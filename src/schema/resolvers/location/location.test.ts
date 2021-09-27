@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server'
-import { CreateLocationArguments, DeleteLocationArguments, FindLocationArguments, UpdateLocationArguments } from '../../../interfaces/LocationTypes'
-import { CreateOrganizationArguments, DeleteOrganizationArguments } from '../../../interfaces/OrganizationTypes'
+import { CreateLocationArguments, DeleteLocationArguments, FindLocationArguments, LocationType, UpdateLocationArguments } from '../../../interfaces/LocationTypes'
+import { CreateOrganizationArguments, DeleteOrganizationArguments, OrganizationType } from '../../../interfaces/OrganizationTypes'
 import { createTestServer } from '../../testUtils/createTestServer'
 import * as LocationQueries from '../../testUtils/locationQueries'
 import * as OrganizationQueries from '../../testUtils/organizationQueries'
@@ -10,8 +10,8 @@ import * as OrganizationQueries from '../../testUtils/organizationQueries'
 // Resolvers Test
 describe('resolvers', () => {
     let server: ApolloServer;
-    let organizationId: any;
-    let locationId: any;
+    let organizationId: number;
+    let locationId: number;
     beforeAll(async () => {
         server = await createTestServer();
 
@@ -23,25 +23,29 @@ describe('resolvers', () => {
             query: OrganizationQueries.CREATE_ORGANIZATION,
             variables: createOrganization
         })
-        organizationId = createOrganizationResult.data?.createOrganization.id
+
+        const organization: OrganizationType = createOrganizationResult.data?.createOrganization
 
         const createLocation: CreateLocationArguments = {
             name: "Twitter SF Headquarters",
             address: "1355 Market St #900, San Francisco, CA 94103",
-            organizationId,
+            organizationId: organization.id,
         }
         const createLocationResult = await server.executeOperation({
             query: LocationQueries.CREATE_LOCATION,
             variables: createLocation
         })
-        locationId = createLocationResult.data?.createLocation.id
+        const location: LocationType = createLocationResult.data?.createLocation
+        organizationId = organization.id
+        locationId = location.id
     })
 
     afterAll(async () => {
         const findResult = await server.executeOperation({
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
-        for (const org of findResult.data?.allOrganizations) {
+        const organizations: Array<OrganizationType> = findResult.data?.allOrganizations
+        for (const org of organizations) {
             const organizationId = org.id
             const deleteOrganization: DeleteOrganizationArguments =
                 { id: organizationId }
@@ -65,8 +69,9 @@ describe('resolvers', () => {
             variables: createLocation
         })
 
+        const location: LocationType = createResult.data?.createLocation
         expect(createResult.errors).toBe(undefined)
-        expect(createResult.data?.createLocation.name).toBe("Twitter NYC Headquarters")
+        expect(location.name).toBe("Twitter NYC Headquarters")
     })
 
     it('Fetch Location By Id', async () => {
@@ -77,8 +82,9 @@ describe('resolvers', () => {
             variables: findLocation
         })
 
+        const location: LocationType = findResult.data?.location
         expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.location.name).toBe("Twitter SF Headquarters")
+        expect(location.name).toBe("Twitter SF Headquarters")
 
     })
 
@@ -89,16 +95,19 @@ describe('resolvers', () => {
             query: LocationQueries.GET_ALL_LOCATIONS
         })
 
-        const locationIds = findAllResults.data?.allLocations.map((location: any) => location.id)
+        const allLocations: Array<LocationType> = findAllResults.data?.allLocations
+        const locationIds: Array<number> = allLocations.map((location: any) => location.id)
 
         const findLocations: FindLocationArguments = { ids: locationIds }
-        const results = await server.executeOperation({
+        const findResults = await server.executeOperation({
             query: LocationQueries.GET_LOCATIONS,
             variables: findLocations
         })
 
-        expect(results.errors).toBe(undefined)
-        expect(results.data?.locations).toHaveLength(2)
+        const locations: Array<LocationType> = findResults.data?.locations
+
+        expect(findResults.errors).toBe(undefined)
+        expect(locations).toHaveLength(2)
     })
 
     it("Fetch All Locations", async () => {
@@ -108,8 +117,10 @@ describe('resolvers', () => {
             query: LocationQueries.GET_ALL_LOCATIONS
         })
 
+        const allLocations: Array<LocationType> = findResults.data?.allLocations
+
         expect(findResults.errors).toBe(undefined)
-        expect(findResults.data?.allLocations).toHaveLength(2)
+        expect(allLocations).toHaveLength(2)
 
     })
 
@@ -126,8 +137,9 @@ describe('resolvers', () => {
             variables: updateLocation
         })
 
+        const location: LocationType = updateResult.data?.updateLocation
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateLocation.name).toBe("Twitter Resort")
+        expect(location.name).toBe("Twitter Resort")
     })
 
     it("Update's a Location's address", async () => {
@@ -143,8 +155,10 @@ describe('resolvers', () => {
             variables: updateLocation
         })
 
+        const location: LocationType = updateResult.data?.updateLocation
+
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateLocation.name).toBe("Twitter Resort")
+        expect(location.name).toBe("Twitter Resort")
     })
 
 
