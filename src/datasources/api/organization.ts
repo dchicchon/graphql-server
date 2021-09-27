@@ -1,5 +1,6 @@
 // organziation file
-import { Arguments, CreateOrganizationArguments } from '../../interfaces/Types'
+import { Arguments } from '../../interfaces/Types'
+import { CreateOrganizationArguments, UpdateOrganizationArguments, FindOrganizationArguments, DeleteOrganizationArguments } from '../../interfaces/OrganizationTypes';
 
 export default class Organization {
     organization
@@ -19,7 +20,7 @@ export default class Organization {
         // return created ? organization.dataValues : { message: "Organization Already Created" };
     }
 
-    async getOrganization({ id }: Arguments) {
+    async getOrganization({ id }: FindOrganizationArguments) {
         const organization = await this.organization.findOne({
             where: { id },
         });
@@ -28,7 +29,7 @@ export default class Organization {
         return organization
     }
 
-    async getOrganizations({ ids }: Arguments) {
+    async getOrganizations({ ids }: FindOrganizationArguments) {
         if (ids) {
             return Promise.all(ids.map((id) => this.getOrganization({ id })));
         }
@@ -38,7 +39,7 @@ export default class Organization {
         return organizations;
     }
 
-    async updateOrganization({ id, name }: Arguments) {
+    async updateOrganization({ id, name }: UpdateOrganizationArguments) {
         // console.log("Update Org in API")
 
         // Returns an array [rows affected, ]
@@ -58,7 +59,7 @@ export default class Organization {
         return resultFind;
     }
 
-    async deleteOrganization({ id }: Arguments) {
+    async deleteOrganization({ id }: DeleteOrganizationArguments) {
         // console.log("Deleting Organization in API")
         const deleteResult = await this.organization.destroy({ where: { id } })
         // console.log(deleteResult)

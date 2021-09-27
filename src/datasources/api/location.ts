@@ -1,7 +1,7 @@
 
 import { Client } from '@googlemaps/google-maps-services-js'
-import { Arguments, CreateLocationArguments, UpdateObject } from '../../interfaces/Types'
-
+// import { Arguments, CreateLocationArguments, UpdateObject } from '../../interfaces/Types'
+import { CreateLocationArguments, FindLocationArguments, UpdateLocationArguments, DeleteLocationArguments } from '../../interfaces/LocationTypes'
 export default class Location {
     location
     constructor(location: any) {
@@ -47,12 +47,12 @@ export default class Location {
         }
 
     }
-    async getLocation({ id }: Arguments) {
+    async getLocation({ id }: FindLocationArguments) {
         const location = await this.location.findOne({ where: { id } });
         // console.log(location);
         return location;
     }
-    async getLocations({ ids }: Arguments) {
+    async getLocations({ ids }: FindLocationArguments) {
         if (ids) {
             return Promise.all(ids.map((id) => this.getLocation({ id })));
         }
@@ -61,7 +61,7 @@ export default class Location {
         const locations = await this.location.findAll();
         return locations
     }
-    async getAllLocationsByOrgId({ id }: Arguments) {
+    async getAllLocationsByOrgId({ id }: FindLocationArguments) {
         const locations = await this.location.findAll({
             where: {
                 organizationId: id,
@@ -70,7 +70,7 @@ export default class Location {
         return locations;
     }
 
-    async updateLocation({ id, name, address }: Arguments) {
+    async updateLocation({ id, name, address }: UpdateLocationArguments) {
         if (address) {
             // console.log("Getting New latitude and longitude")
             const client = new Client()
@@ -93,7 +93,8 @@ export default class Location {
                     return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
                 }
                 let { lat, lng } = r.data.results[0].geometry.location
-                const updateObject: UpdateObject = {}
+
+                const updateObject: any = {}
                 if (name) updateObject.name = name;
                 updateObject.address = address
                 updateObject.latitude = lat
@@ -123,12 +124,12 @@ export default class Location {
 
 
     }
-    async deleteLocation({ id }: Arguments) {
+    async deleteLocation({ id }: DeleteLocationArguments) {
         const location = await this.location.destroy({ where: { id } });
         return location;
     }
 
-    async deleteLocationByOrganizationId({ organizationId }: Arguments) {
+    async deleteLocationByOrganizationId({ organizationId }: DeleteLocationArguments) {
         // console.log("Delete Location in API by organizationId")
         const deleteResult = await this.location.destroy({ where: { organizationId } })
         // console.log(deleteResult)

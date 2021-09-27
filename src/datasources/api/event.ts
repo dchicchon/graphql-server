@@ -1,6 +1,6 @@
 
-import { Arguments, CreateEventArguments, UpdateObject } from '../../interfaces/Types'
-
+import { Arguments, } from '../../interfaces/Types'
+import { CreateEventArguments, FindEventArguments, UpdateEventArguments, DeleteEventArguments } from '../../interfaces/EventTypes';
 export default class Event {
     event
     constructor(event: any) {
@@ -20,13 +20,13 @@ export default class Event {
     }
 
 
-    async getEvent({ id }: Arguments) {
+    async getEvent({ id }: FindEventArguments) {
         const event = await this.event.findOne({ where: { id } });
         return event;
     }
 
 
-    async getEvents({ ids }: Arguments) {
+    async getEvents({ ids }: FindEventArguments) {
         if (ids) {
             return Promise.all(ids.map((id) => this.getEvent({ id })));
         }
@@ -40,7 +40,7 @@ export default class Event {
     }
 
 
-    async getAllEventsByOrgId({ id }: Arguments) {
+    async getAllEventsByOrgId({ id }: FindEventArguments) {
         const events = await this.event.findAll({
             where: {
                 organizationId: id,
@@ -53,9 +53,9 @@ export default class Event {
     // =========================
     // UPDATE
     // =========================
-    async updateEvent({ id, name, dateAndTime, description }: Arguments) {
+    async updateEvent({ id, name, dateAndTime, description }: UpdateEventArguments) {
         // console.log('Update Event')
-        const updateObject: UpdateObject = {}
+        const updateObject: any = {}
         if (name) updateObject.name = name;
         if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
         if (description) updateObject.description = description
@@ -71,12 +71,12 @@ export default class Event {
     }
 
 
-    async deleteEvent({ id }: Arguments) {
+    async deleteEvent({ id }: DeleteEventArguments) {
         const event = await this.event.destroy({ where: { id } });
         return event;
     }
 
-    async deleteEventByOrganizationId({ organizationId }: Arguments) {
+    async deleteEventByOrganizationId({ organizationId }: DeleteEventArguments) {
         // console.log("Delete Event in API by Organization Id")
         const deleteResult = await this.event.destroy({ where: { organizationId } })
         // console.log(deleteResult)

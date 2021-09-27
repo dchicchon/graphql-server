@@ -1,11 +1,15 @@
-import { Arguments, DataSourceParent, } from '../../../interfaces/Types'
+import { DataSourceParent, } from '../../../interfaces/Types'
+import { CreateOrganizationArguments, DeleteOrganizationArguments, FindOrganizationArguments, UpdateOrganizationArguments } from '../../../interfaces/OrganizationTypes'
+import { FindLocationArguments } from '../../../interfaces/LocationTypes'
+import { FindEventArguments } from '../../../interfaces/EventTypes'
 
 // Queries
-const organization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
+// https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments
+const organization = async (_: any, { id }: FindOrganizationArguments, { dataSources }: DataSourceParent) => {
     const results = await dataSources.api.organization.getOrganization({ id })
     return results
 }
-const organizations = async (_: any, { ids }: Arguments, { dataSources }: DataSourceParent) => {
+const organizations = async (_: any, { ids }: FindOrganizationArguments, { dataSources }: DataSourceParent) => {
     const results = await dataSources.api.organization.getOrganizations({ ids })
     return results
 }
@@ -15,13 +19,13 @@ const allOrganizations = async (_: any, __: any, { dataSources }: DataSourcePare
 }
 
 // Mutations
-const createOrganization = async (_: any, { name }: Arguments, { dataSources }: DataSourceParent) => {
+const createOrganization = async (_: any, { name }: CreateOrganizationArguments, { dataSources }: DataSourceParent) => {
     const results = await dataSources.api.organization.createOrganization({ name });
     return results;
 }
 
 
-const updateOrganization = async (_: any, { id, name }: Arguments, { dataSources }: DataSourceParent) => {
+const updateOrganization = async (_: any, { id, name }: UpdateOrganizationArguments, { dataSources }: DataSourceParent) => {
     // console.log("Update Org in Resolvers")
     const results = await dataSources.api.organization.updateOrganization({ id, name });
     // console.log("Resolver Results")
@@ -29,7 +33,7 @@ const updateOrganization = async (_: any, { id, name }: Arguments, { dataSources
     return results
 }
 
-const deleteOrganization = async (_: any, { id }: Arguments, { dataSources }: DataSourceParent) => {
+const deleteOrganization = async (_: any, { id }: DeleteOrganizationArguments, { dataSources }: DataSourceParent) => {
     // console.log("Delete Organization in Resolvers")
     const deleteOrganizationResults = await dataSources.api.organization.deleteOrganization({ id });
     // console.log(deleteOrganizationResults)
@@ -49,11 +53,11 @@ const deleteOrganization = async (_: any, { id }: Arguments, { dataSources }: Da
 }
 
 const Organization = {
-    locations: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => {
+    locations: async ({ id }: FindLocationArguments, _: any, { dataSources }: DataSourceParent) => {
         const results = await dataSources.api.location.getAllLocationsByOrgId({ id })
         return results
     },
-    events: async ({ id }: Arguments, _: any, { dataSources }: DataSourceParent) => {
+    events: async ({ id }: FindEventArguments, _: any, { dataSources }: DataSourceParent) => {
         const results = await dataSources.api.event.getAllEventsByOrgId({ id })
         return results
     }

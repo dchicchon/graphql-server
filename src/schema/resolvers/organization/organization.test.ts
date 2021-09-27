@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server'
+import { CreateOrganizationArguments, DeleteOrganizationArguments, FindOrganizationArguments, UpdateOrganizationArguments } from '../../../interfaces/OrganizationTypes';
 import { createTestServer } from '../../testUtils/createTestServer'
 import * as OrganizationQueries from '../../testUtils/organizationQueries'
 
@@ -17,18 +18,20 @@ describe("Organization Resolvers", () => {
         for (const org of findResult.data?.allOrganizations) {
             const organizationId = org.id
 
+            const deleteOrganization: DeleteOrganizationArguments = { id: organizationId }
             const deleteResult = await server.executeOperation({
                 query: OrganizationQueries.DELETE_ORGANIZATION,
-                variables: { id: organizationId }
+                variables: deleteOrganization
             })
         }
     })
     // TESTS: CREATE
     it("Create an Organization", async () => {
         expect.assertions(2)
+        const createOrganization: CreateOrganizationArguments = { name: "Amazon" }
         const result = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
-            variables: { name: "Amazon" }
+            variables: createOrganization
         })
 
         expect(result.errors).toBe(undefined)
@@ -38,17 +41,19 @@ describe("Organization Resolvers", () => {
     // TESTS: READ
     it('Creates and Fetches Organization by Id', async () => {
         expect.assertions(3)
+        const createOrganization: CreateOrganizationArguments = { name: "Google" }
 
         const createResult = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
-            variables: { name: "Google" }
+            variables: createOrganization
         })
 
         const organizationId = createResult.data?.createOrganization.id
 
+        const findOrganization: FindOrganizationArguments = { id: organizationId }
         const findResult = await server.executeOperation({
             query: OrganizationQueries.GET_ORGANIZATION,
-            variables: { id: organizationId }
+            variables: findOrganization
         })
 
         expect(createResult.errors).toBe(undefined)
@@ -63,9 +68,10 @@ describe("Organization Resolvers", () => {
         })
 
         const orgIds = findAllResults.data?.allOrganizations.map((org: any) => org.id)
+        const findOrganizations: FindOrganizationArguments = { ids: orgIds }
         const findResults = await server.executeOperation({
             query: OrganizationQueries.GET_ORGANIZATIONS,
-            variables: { ids: orgIds }
+            variables: findOrganizations
         })
 
         expect(findResults.errors).toBe(undefined)
@@ -95,23 +101,23 @@ describe("Organization Resolvers", () => {
 
         // console.log(findResult.data?.allOrganizations)
 
+        const updateOrganization: UpdateOrganizationArguments = {
+            id: organizationId,
+            name: "Amazoo"
+        }
         const updateResult = await server.executeOperation({
             query: OrganizationQueries.UPDATE_ORGANIZATION,
-            variables: {
-                id: organizationId,
-                name: "Amazoo"
-            }
+            variables: updateOrganization
         })
 
+        const revertOrganization: UpdateOrganizationArguments = {
+            id: organizationId,
+            name: "Amazon"
+        }
         const revertResult = await server.executeOperation({
             query: OrganizationQueries.UPDATE_ORGANIZATION,
-            variables: {
-                id: organizationId,
-                name: "Amazon"
-            }
+            variables: revertOrganization
         })
-
-        // console.log(updateResult)
 
         expect(updateResult.errors).toBe(undefined)
         expect(findResult.data?.allOrganizations[0].name).toBe("Amazon")
@@ -123,9 +129,11 @@ describe("Organization Resolvers", () => {
     it("Create and Deletes an organization", async () => {
         expect.assertions(4)
 
+        const createOrganization: CreateOrganizationArguments = { name: "Twitter" }
+
         const createResult = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
-            variables: { name: "Twitter" }
+            variables: createOrganization
         })
 
         const expectedResult = {
@@ -134,9 +142,11 @@ describe("Organization Resolvers", () => {
 
         const organizationId = createResult.data?.createOrganization.id
 
+
+        const deleteOrganization: DeleteOrganizationArguments = { id: organizationId }
         const deleteResult = await server.executeOperation({
             query: OrganizationQueries.DELETE_ORGANIZATION,
-            variables: { id: organizationId }
+            variables: deleteOrganization
         })
 
         expect(createResult.errors).toBe(undefined)
