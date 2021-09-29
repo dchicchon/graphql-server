@@ -3,6 +3,9 @@ import { createTestServer } from '../testUtils/createTestServer'
 import * as OrganizationQueries from '../testUtils/organizationQueries'
 import * as LocationQueries from '../testUtils/locationQueries'
 import * as EventQueries from '../testUtils/eventQueries'
+import { CreateOrganizationArguments, DeleteOrganizationArguments, FindOrganizationArguments, OrganizationType, UpdateOrganizationArguments } from '../../interfaces/OrganizationTypes'
+import { CreateLocationArguments, DeleteLocationArguments, FindLocationArguments, LocationType, UpdateLocationArguments } from '../../interfaces/LocationTypes'
+import { CreateEventArguments, DeleteEventArguments, EventType, FindEventArguments } from '../../interfaces/EventTypes'
 
 describe("Testing Jest", () => {
     it("Runs a test", async () => {
@@ -26,7 +29,9 @@ describe('All Resolvers', () => {
         const result = await server.executeOperation({
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
-        for (const org of result.data?.allOrganizations) {
+
+        const allOrganizations: Array<OrganizationType> = result.data?.allOrganizations
+        for (const org of allOrganizations) {
             await server.executeOperation({
                 query: OrganizationQueries.DELETE_ORGANIZATION,
                 variables: {
@@ -44,13 +49,19 @@ describe('All Resolvers', () => {
     // TESTS: CREATE
     it("Create an Organization", async () => {
         expect.assertions(2)
+
+        const createOrganization: CreateOrganizationArguments = {
+            name: "Polus"
+        }
+
         const result = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
-            variables: { name: "Polus" }
+            variables: createOrganization
         })
 
+        const organization: OrganizationType = result.data?.createOrganization
         expect(result.errors).toBe(undefined)
-        expect(result.data?.createOrganization.name).toBe("Polus")
+        expect(organization.name).toBe("Polus")
     })
 
     it("Creates a Location", async () => {
@@ -61,23 +72,25 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const organizationId = findResult.data?.allOrganizations[0].id
-
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations;
+        const createLocation: CreateLocationArguments = {
+            name: "Polus Headquarters",
+            address: "205 W 109th Street, New York, New York 100025",
+            organizationId: allOrganizations[0].id,
+        }
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
             query: LocationQueries.CREATE_LOCATION,
-            variables: {
-                name: "Polus Headquarters",
-                address: "205 W 109th Street, New York, New York 100025",
-                organizationId,
-            }
+            variables: createLocation
         })
 
+        const location: LocationType = createResult.data?.createLocation
+
         expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations).toHaveLength(1)
+        expect(allOrganizations).toHaveLength(1)
         expect(createResult.errors).toBe(undefined)
-        expect(createResult.data?.createLocation.name).toBe("Polus Headquarters")
+        expect(location.name).toBe("Polus Headquarters")
     })
 
     it("Creates an Event", async () => {
@@ -87,121 +100,164 @@ describe('All Resolvers', () => {
         const findResult = await server.executeOperation({
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
-
-        const organizationId = findResult.data?.allOrganizations[0].id
-
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations;
+        const createEvent: CreateEventArguments = {
+            name: "Party!",
+            dateAndTime: new Date('10/12/2021'),
+            description: "A gathering of friends",
+            organizationId: allOrganizations[0].id,
+        }
         const eventResult = await server.executeOperation({
             query: EventQueries.CREATE_EVENT,
-            variables: {
-                name: "Party!",
-                dateAndTime: new Date('10/12/2021'),
-                description: "A gathering of friends",
-                organizationId: organizationId,
-            }
+            variables: createEvent
         })
 
+        const event: EventType = eventResult.data?.createEvent
+
         expect(eventResult.errors).toBe(undefined)
-        expect(eventResult.data?.createEvent.name).toBe("Party!")
+        expect(event.name).toBe("Party!")
 
     })
 
     // TESTS: READ
     it('Fetch Organization by Id', async () => {
-        expect.assertions(1)
+        expect.assertions(2)
+
+        const findResult = await server.executeOperation({
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
+        })
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations;
+        const findOrganization: FindOrganizationArguments = { id: allOrganizations[0].id } // this is wrong
         const results = await server.executeOperation({
             query: OrganizationQueries.GET_ORGANIZATION,
-            variables: { id: 1 }
+            variables: findOrganization
         })
 
+        const organization: OrganizationType = results.data?.organization
         expect(results.errors).toBe(undefined)
-        // expect(results.data?.organization)
-        // console.log(results.data?.organization)
+        expect(organization.name).toBe("Polus")
     })
 
     it('Fetch Location By Id', async () => {
-        expect.assertions(1)
+        expect.assertions(2)
 
-        const results = await server.executeOperation({
-            query: LocationQueries.GET_LOCATION,
-            variables: { id: 1 }
+        const findResults = await server.executeOperation({
+            query: LocationQueries.GET_ALL_LOCATIONS
         })
 
-        // console.log("Find Location Test")
-        // console.log(results)
+        const allLocations: Array<LocationType> = findResults.data?.allLocations
 
+        const findLocation: FindLocationArguments = { id: allLocations[0].id }
+        const results = await server.executeOperation({
+            query: LocationQueries.GET_LOCATION,
+            variables: findLocation
+        })
+
+        const location: LocationType = results.data?.location
         expect(results.errors).toBe(undefined)
+        expect(location.name).toBe("Polus Headquarters")
     })
 
     it('Fetch Event By Id', async () => {
+        expect.assertions(2)
 
-        expect.assertions(1)
-
-        const results = await server.executeOperation({
-            query: EventQueries.GET_EVENT,
-            variables: { id: 1 }
+        const findResults = await server.executeOperation({
+            query: EventQueries.GET_ALL_EVENTS
         })
 
+
+        const allEvents: Array<EventType> = findResults.data?.allEvents
+        const findEventById: FindEventArguments = { id: allEvents[0].id }
+        const results = await server.executeOperation({
+            query: EventQueries.GET_EVENT,
+            variables: findEventById
+        })
+
+        const event: EventType = results.data?.event
         // console.log("Find Event Test")
         // console.log(results)
 
         expect(results.errors).toBe(undefined)
+        expect(event.name).toBe("Party!")
     })
 
     it('Fetches Organizations by Id', async () => {
-        expect.assertions(1)
+        expect.assertions(3)
 
         const findAllResult = await server.executeOperation({
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const organizationIds = findAllResult.data?.allOrganizations.map((organization: any) => organization.id)
+        const allOrganizations: Array<OrganizationType> = findAllResult.data?.allOrganizations
+        const findOrganizations: FindOrganizationArguments = { ids: allOrganizations.map((org) => (org.id)) }
 
         const findResults = await server.executeOperation({
             query: OrganizationQueries.GET_ORGANIZATIONS,
-            variables: { id: [organizationIds] }
+            variables: findOrganizations
         })
 
+        const organizations: Array<OrganizationType> = findResults.data?.organizations
         expect(findResults.errors).toBe(undefined)
-        // expect(findResults.data?.organizations).
+        expect(organizations[0].name).toBe("Polus")
+        expect(organizations).toHaveLength(1)
     })
 
 
 
     it('Fetch Locations By Ids', async () => {
-        expect.assertions(1)
+        expect.assertions(3)
 
         const findAllResult = await server.executeOperation({
             query: LocationQueries.GET_ALL_LOCATIONS
         })
 
-        const locationIds = findAllResult.data?.allLocations.map((location: any) => location.id)
+        const allLocations: Array<LocationType> = findAllResult.data?.allLocations
+        const findLocations: FindLocationArguments = { ids: allLocations.map((location) => location.id) }
 
         const findResults = await server.executeOperation({
             query: LocationQueries.GET_LOCATIONS,
-            variables: { ids: locationIds }
+            variables: findLocations
         })
 
+        const locations: Array<LocationType> = findResults.data?.locations
+
         expect(findResults.errors).toBe(undefined)
-        // expect(findResults.data?.locations).toHaveLength(locationIds.length)
+        expect(locations[0].name).toBe("Polus Headquarters")
+        expect(locations).toHaveLength(1)
     })
 
     it('Fetch Events By Ids', async () => {
-        expect.assertions(1)
+        expect.assertions(3)
 
         const findAllResult = await server.executeOperation({
             query: EventQueries.GET_ALL_EVENTS
         })
-        const eventIds = findAllResult.data?.allEvents.map((event: any) => event.id)
+
+        const allEvents: Array<EventType> = findAllResult.data?.allEvents
+        const findEventArguments: FindEventArguments = { ids: allEvents.map((event) => event.id) }
 
         const findResults = await server.executeOperation({
             query: EventQueries.GET_EVENTS,
-            variables: { ids: eventIds }
+            variables: findEventArguments
         })
 
+        const events: Array<EventType> = findResults.data?.events
         expect(findResults.errors).toBe(undefined)
-        // expect(findResults.data?.events).toHaveLength(eventIds.length)
+        expect(events).toHaveLength(1)
+        expect(events[0].name).toBe("Party!")
     })
 
+    it("Fetches All Locations", async () => {
+        expect.assertions(2)
+        const result = await server.executeOperation({
+            query: OrganizationQueries.GET_ALL_ORGANIZATIONS
+        })
+
+        const allOrganizations: Array<OrganizationType> = result.data?.allOrganizations
+        expect(result.errors).toBe(undefined)
+        expect(allOrganizations).toHaveLength(1)
+
+    })
 
     it("Fetch All Locations", async () => {
         expect.assertions(2)
@@ -210,8 +266,10 @@ describe('All Resolvers', () => {
             query: LocationQueries.GET_ALL_LOCATIONS
         })
 
+        const allLocations: Array<LocationType> = findResults.data?.allLocations
+
         expect(findResults.errors).toBe(undefined)
-        expect(findResults.data?.allLocations).toHaveLength(1)
+        expect(allLocations).toHaveLength(1)
 
     })
     it("Fetch All Events", async () => {
@@ -221,8 +279,9 @@ describe('All Resolvers', () => {
             query: EventQueries.GET_ALL_EVENTS
         })
 
+        const allEvents: Array<EventType> = findResults.data?.allEvents
         expect(findResults.errors).toBe(undefined)
-        expect(findResults.data?.allEvents).toHaveLength(1)
+        expect(allEvents).toHaveLength(1)
 
     })
 
@@ -235,32 +294,37 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS,
         })
 
-        const organizationId = findResult.data?.allOrganizations[0].id
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations
+        const updateOrganization: UpdateOrganizationArguments = {
+            id: allOrganizations[0].id,
+            name: "Pola"
+        }
 
-        // console.log(findResult.data?.allOrganizations)
 
         const updateResult = await server.executeOperation({
             query: OrganizationQueries.UPDATE_ORGANIZATION,
-            variables: {
-                id: organizationId,
-                name: "Pola"
-            }
+            variables: updateOrganization
         })
+
+        const updatedOrganization: OrganizationType = updateResult.data?.updateOrganization
+
+        const revertOrganization: UpdateOrganizationArguments = {
+            id: allOrganizations[0].id,
+            name: "Polus"
+        }
 
         const revertResult = await server.executeOperation({
             query: OrganizationQueries.UPDATE_ORGANIZATION,
-            variables: {
-                id: organizationId,
-                name: "Polus"
-            }
+            variables: revertOrganization
         })
 
-        // console.log(updateResult)
+        const revertedOrganization: OrganizationType = revertResult.data?.updateOrganization
+
 
         expect(updateResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations[0].name).toBe("Polus")
-        expect(updateResult.data?.updateOrganization.name).toBe("Pola")
-        expect(revertResult.data?.updateOrganization.name).toBe("Polus")
+        expect(allOrganizations[0].name).toBe("Polus")
+        expect(updatedOrganization.name).toBe("Pola")
+        expect(revertedOrganization.name).toBe("Polus")
     })
 
     it("Updates a Location", async () => {
@@ -270,20 +334,22 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const locationId = findResult.data?.allOrganizations[0].locations[0].id
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations
+        const updateLocation: UpdateLocationArguments = {
+            id: allOrganizations[0].locations[0].id,
+            name: "Polus Resort"
+        }
+
         const updateResult = await server.executeOperation({
             query: LocationQueries.UPDATE_LOCATION,
-            variables: {
-                name: "Polus Resort",
-                id: locationId,
-            }
+            variables: updateLocation
         })
 
-
+        const updatedLocation: LocationType = updateResult.data?.updateLocation
         expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations[0].locations[0].name).toBe("Polus Headquarters")
+        expect(allOrganizations[0].locations[0].name).toBe("Polus Headquarters")
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateLocation.name).toBe("Polus Resort")
+        expect(updatedLocation.name).toBe("Polus Resort")
     })
 
     it("Updates an Event", async () => {
@@ -292,23 +358,25 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const eventId = findResult.data?.allOrganizations[0].events[0].id
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations
+        const updateEvent = {
+            id: allOrganizations[0].events[0].id,
+            name: "Birthday",
+            dateAndTime: new Date('12/18/2021'),
+            description: "It's my birthday!",
+        }
 
         const updateResult = await server.executeOperation({
             query: EventQueries.UPDATE_EVENT,
-            variables: {
-                id: eventId,
-                name: "Birthday",
-                dateAndTime: new Date('12/18/2021'),
-                description: "It's my birthday!",
-            }
+            variables: updateEvent
         })
 
+        const event: EventType = updateResult.data?.updateEvent
 
         expect(findResult.errors).toBe(undefined)
-        expect(findResult.data?.allOrganizations[0].events[0].name).toBe("Party!")
+        expect(allOrganizations[0].events[0].name).toBe("Party!")
         expect(updateResult.errors).toBe(undefined)
-        expect(updateResult.data?.updateEvent.name).toBe("Birthday")
+        expect(event.name).toBe("Birthday")
     })
 
 
@@ -316,24 +384,26 @@ describe('All Resolvers', () => {
     it("Create and Deletes an organization", async () => {
         expect.assertions(4)
 
+
+        const createOrganization: CreateOrganizationArguments = { name: "Google" }
         const createResult = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
-            variables: { name: "Google" }
+            variables: createOrganization
         })
 
         const expectedResult = {
             success: true
         }
 
-        const organizationId = createResult.data?.createOrganization.id
-
+        const organization: OrganizationType = createResult.data?.createOrganization
+        const deleteOrganization: DeleteOrganizationArguments = { id: organization.id }
         const deleteResult = await server.executeOperation({
             query: OrganizationQueries.DELETE_ORGANIZATION,
-            variables: { id: organizationId }
+            variables: deleteOrganization
         })
 
         expect(createResult.errors).toBe(undefined)
-        expect(createResult.data?.createOrganization.name).toBe("Google")
+        expect(organization.name).toBe("Google")
         expect(deleteResult.errors).toBe(undefined)
         expect(deleteResult.data?.deleteOrganization).toEqual(expectedResult)
     })
@@ -348,24 +418,26 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const organizationId = findResult.data?.allOrganizations[0].id
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations
 
+        const createLocation: CreateLocationArguments = {
+            name: "Company Island",
+            address: "23 Happy Valley Rd, Pembroke, Bermuda",
+            organizationId: allOrganizations[0].id,
+        }
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
             query: LocationQueries.CREATE_LOCATION,
-            variables: {
-                name: "Company Island",
-                address: "23 Happy Valley Rd, Pembroke, Bermuda",
-                organizationId: organizationId,
-            }
+            variables: createLocation
         })
 
-        const locationId = createResult.data?.createLocation.id
+        const location: LocationType = createResult.data?.createLocation
 
+        const deleteLocation: DeleteLocationArguments = { id: location.id }
         const deleteResult = await server.executeOperation({
             query: LocationQueries.DELETE_LOCATION,
-            variables: { id: locationId }
+            variables: deleteLocation
         })
 
         expect(findResult.errors).toBe(undefined)
@@ -384,25 +456,27 @@ describe('All Resolvers', () => {
             query: OrganizationQueries.GET_ALL_ORGANIZATIONS
         })
 
-        const organizationId = findResult.data?.allOrganizations[0].id
+        const allOrganizations: Array<OrganizationType> = findResult.data?.allOrganizations
 
+        const createEvent: CreateEventArguments = {
+            name: "Stockholder Meeting",
+            dateAndTime: new Date('11/11/2021'),
+            description: "Gathering all of the stockholders in order to talk about the company's future",
+            organizationId: allOrganizations[0].id,
+        }
         // First find the first organization that shows up and use its id
 
         const createResult = await server.executeOperation({
             query: EventQueries.CREATE_EVENT,
-            variables: {
-                name: "Stockholder Meeting",
-                dateAndTime: new Date('11/11/2021'),
-                description: "Gathering all of the stockholders in order to talk about the company's future",
-                organizationId: organizationId,
-            }
+            variables: createEvent
         })
 
-        const eventId = createResult.data?.createEvent.id
+        const event: EventType = createResult.data?.createEvent
+        const deleteEvent: DeleteEventArguments = { id: event.id }
 
         const deleteResult = await server.executeOperation({
             query: EventQueries.DELETE_EVENT,
-            variables: { id: eventId }
+            variables: deleteEvent
         })
 
         expect(findResult.errors).toBe(undefined)

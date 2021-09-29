@@ -1,5 +1,4 @@
 // organziation file
-import { Arguments } from '../../interfaces/Types'
 import { CreateOrganizationArguments, UpdateOrganizationArguments, FindOrganizationArguments, DeleteOrganizationArguments } from '../../interfaces/OrganizationTypes';
 
 export default class Organization {

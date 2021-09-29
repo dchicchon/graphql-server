@@ -1,8 +1,12 @@
+import { EventType } from "./EventTypes";
+import { LocationType } from "./LocationTypes";
 import { Arguments } from "./Types";
 
 export interface OrganizationType {
     id: number,
-    name: string
+    name: string,
+    locations: Array<LocationType>,
+    events: Array<EventType>
 }
 
 export interface FindOrganizationArguments extends Arguments {

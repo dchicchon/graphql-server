@@ -10,7 +10,7 @@ export interface EventType {
 
 export interface FindEventArguments extends Arguments {
     organizationId?: number
-}
+}   
 
 export interface CreateEventArguments {
     name: string,

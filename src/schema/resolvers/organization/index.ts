@@ -11,6 +11,7 @@ const organization = async (_: any, { id }: FindOrganizationArguments, { dataSou
 }
 const organizations = async (_: any, { ids }: FindOrganizationArguments, { dataSources }: DataSourceParent) => {
     const results: Array<OrganizationType> = await dataSources.api.organization.getOrganizations({ ids })
+
     return results
 }
 const allOrganizations = async (_: any, __: any, { dataSources }: DataSourceParent) => {
