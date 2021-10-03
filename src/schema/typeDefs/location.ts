@@ -1,8 +1,8 @@
-import { gql } from 'apollo-server'
+import { gql } from "apollo-server"
 export const typeDefs = gql`
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
-  """An organization's location"""
+  """An organization"s location"""
   type Location {
     id: ID!
     name: String!

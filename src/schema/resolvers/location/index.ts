@@ -18,7 +18,7 @@ const allLocations = async (_: any, __: any, { dataSources }: DataSourceParent) 
 }
 // Mutations
 const createLocation = async (_: any, { name, address, organizationId }: CreateLocationArguments, { dataSources }: DataSourceParent) => {
-    // console.log("Create Location Resolver")
+    // console.log('Create Location Resolver')
     // console.log(name, address, organizationId)
     const results: LocationType = await dataSources.api.location.createLocation({
         name,
@@ -30,7 +30,7 @@ const createLocation = async (_: any, { name, address, organizationId }: CreateL
 }
 
 const updateLocation = async (_: any, { id, name, address }: UpdateLocationArguments, { dataSources }: DataSourceParent) => {
-    // console.log("Update LocationType in Resolvers")
+    // console.log('Update LocationType in Resolvers')
     const updateResult: LocationType = await dataSources.api.location.updateLocation({ id, name, address });
     return updateResult
 }

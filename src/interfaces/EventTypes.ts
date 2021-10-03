@@ -1,4 +1,4 @@
-import { Arguments } from "./Types";
+import { Arguments } from './Types';
 
 export interface EventType {
     id: number,
@@ -10,7 +10,7 @@ export interface EventType {
 
 export interface FindEventArguments extends Arguments {
     organizationId?: number
-}   
+}
 
 export interface CreateEventArguments {
     name: string,

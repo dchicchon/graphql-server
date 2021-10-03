@@ -32,7 +32,7 @@ const updateOrganization = async (_: any, { id, name }: UpdateOrganizationArgume
 }
 
 const deleteOrganization = async (_: any, { id }: DeleteOrganizationArguments, { dataSources }: DataSourceParent) => {
-    // console.log("Delete Organization in Resolvers")
+    // console.log('Delete Organization in Resolvers')
     const deleteOrganizationResults = await dataSources.api.organization.deleteOrganization({ id });
     // console.log(deleteOrganizationResults)
     const deleteLocationResults = await dataSources.api.location.deleteLocationByOrganizationId({ organizationId: id })

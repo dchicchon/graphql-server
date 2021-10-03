@@ -1,4 +1,4 @@
-import { Arguments } from "./Types";
+import { Arguments } from './Types';
 
 export interface LocationType {
     id: number,

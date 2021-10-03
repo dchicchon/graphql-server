@@ -3,7 +3,7 @@ export const typeDefs = gql`
   # https://stackoverflow.com/questions/49693928/date-and-json-in-type-definition-for-graphql
   scalar Date
   
-  """An organization's event"""
+  """An organization"s event"""
   type Event {
     id: ID!
     name: String!

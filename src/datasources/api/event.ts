@@ -12,7 +12,7 @@ export default class Event {
     // =========================
 
     async createEvent({ name, dateAndTime, description, organizationId }: CreateEventArguments) {
-        // console.log("Creating Event")
+        // console.log('Creating Event')
         const [event, created] = await this.event.findOrCreate({
             where: { name, dateAndTime: dateAndTime, description, organizationId },
         });
@@ -77,9 +77,7 @@ export default class Event {
     }
 
     async deleteEventByOrganizationId({ organizationId }: DeleteEventArguments) {
-        // console.log("Delete Event in API by Organization Id")
         const deleteResult = await this.event.destroy({ where: { organizationId } })
-        // console.log(deleteResult)
         return deleteResult
     }
 }

@@ -3,39 +3,39 @@ import { Sequelize, DataTypes } from 'sequelize'
 export const createStore = () => {
   const db = new Sequelize({
     logging: false,
-    dialect: "sqlite",
-    storage: "./storage.sqlite",
+    dialect: 'sqlite',
+    storage: './storage.sqlite',
   });
 
   // Make tables here for our database
-  const organization = db.define("organization", {
+  const organization = db.define('organization', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       },
       allowNull: false,
     },
   });
 
-  const location = db.define("location", {
+  const location = db.define('location', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       }, allowNull: false
     },
@@ -45,17 +45,17 @@ export const createStore = () => {
     organizationId: { type: DataTypes.INTEGER },
   });
 
-  const event = db.define("event", {
+  const event = db.define('event', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       },
       allowNull: false,
@@ -64,7 +64,7 @@ export const createStore = () => {
       type: DataTypes.DATE,
       validate: {
         isDate: {
-          msg: "Must be a valid date",
+          msg: 'Must be a valid date',
           args: true
         }
       },
@@ -88,39 +88,39 @@ export const createStore = () => {
 export const createTestStore = () => {
   const db = new Sequelize({
     logging: false,
-    dialect: "sqlite",
-    storage: "./testStorage.sqlite",
+    dialect: 'sqlite',
+    storage: './testStorage.sqlite',
   });
 
   // Make tables here for our database
-  const organization = db.define("organization", {
+  const organization = db.define('organization', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       },
       allowNull: false,
     },
   });
 
-  const location = db.define("location", {
+  const location = db.define('location', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       }, allowNull: false
     },
@@ -130,17 +130,17 @@ export const createTestStore = () => {
     organizationId: { type: DataTypes.INTEGER },
   });
 
-  const event = db.define("event", {
+  const event = db.define('event', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           // args: true,
-          msg: "Name Required"
+          msg: 'Name Required'
         },
         len: {
           args: [4, 40],
-          msg: "Name length not within range 4-40"
+          msg: 'Name length not within range 4-40'
         }
       },
       allowNull: false,
@@ -149,7 +149,7 @@ export const createTestStore = () => {
       type: DataTypes.DATE,
       validate: {
         isDate: {
-          msg: "Must be a valid date",
+          msg: 'Must be a valid date',
           args: true
         }
       },

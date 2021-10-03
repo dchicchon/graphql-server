@@ -1,4 +1,4 @@
-import { GraphQLScalarType, Kind } from "graphql";
+import { GraphQLScalarType, Kind } from 'graphql';
 
 export module Scalars {
     export const dateScalar = new GraphQLScalarType({

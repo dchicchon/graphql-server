@@ -1,6 +1,6 @@
-import { EventType } from "./EventTypes";
-import { LocationType } from "./LocationTypes";
-import { Arguments } from "./Types";
+import { EventType } from './EventTypes';
+import { LocationType } from './LocationTypes';
+import { Arguments } from './Types';
 
 export interface OrganizationType {
     id: number,

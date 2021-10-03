@@ -8,7 +8,7 @@ export default class Organization {
     }
 
     async createOrganization({ name }: CreateOrganizationArguments) {
-        // console.log("Creating Organization")
+        // console.log('Creating Organization')
         const [organization, created] = await this.organization.findOrCreate({
             where: {
                 name,
@@ -16,14 +16,14 @@ export default class Organization {
         });
         // console.log(organization)
         return organization.dataValues
-        // return created ? organization.dataValues : { message: "Organization Already Created" };
+        // return created ? organization.dataValues : { message: 'Organization Already Created' };
     }
 
     async getOrganization({ id }: FindOrganizationArguments) {
         const organization = await this.organization.findOne({
             where: { id },
         });
-        // console.log("Getting organization")
+        // console.log('Getting organization')
         // console.log(organization)
         return organization
     }
@@ -39,7 +39,7 @@ export default class Organization {
     }
 
     async updateOrganization({ id, name }: UpdateOrganizationArguments) {
-        // console.log("Update Org in API")
+        // console.log('Update Org in API')
 
         // Returns an array [rows affected, ]
         const resultsArray = await this.organization.update(
@@ -49,7 +49,7 @@ export default class Organization {
                     id
                 }
             });
-        // console.log("API Result")
+        // console.log('API Result')
         // console.log(resultsArray)
 
         const resultFind = await this.getOrganization({ id })
@@ -59,7 +59,7 @@ export default class Organization {
     }
 
     async deleteOrganization({ id }: DeleteOrganizationArguments) {
-        // console.log("Deleting Organization in API")
+        // console.log('Deleting Organization in API')
         const deleteResult = await this.organization.destroy({ where: { id } })
         // console.log(deleteResult)
         return deleteResult

@@ -13,7 +13,7 @@ describe('All Resolvers', () => {
     beforeAll(async () => {
         server = await createTestServer();
         const newOrganization: CreateOrganizationArguments = {
-            name: "Facebook"
+            name: 'Facebook'
         }
         const createOrganizationResult = await server.executeOperation({
             query: OrganizationQueries.CREATE_ORGANIZATION,
@@ -21,8 +21,8 @@ describe('All Resolvers', () => {
         })
         organizationId = createOrganizationResult.data?.createOrganization.id
         const newEvent: CreateEventArguments = {
-            name: "Expunge User Data",
-            description: "NSA is coming by soon. Delete everything!",
+            name: 'Expunge User Data',
+            description: 'NSA is coming by soon. Delete everything!',
             dateAndTime: new Date('12/12/2021'),
             organizationId
         }
@@ -54,7 +54,7 @@ describe('All Resolvers', () => {
 
     })
 
-    it("Creates an Event", async () => {
+    it('Creates an Event', async () => {
         expect.assertions(2)
         // Find the first result and add this location to it
         const findResult = await server.executeOperation({
@@ -64,9 +64,9 @@ describe('All Resolvers', () => {
         const organizationId = findResult.data?.allOrganizations[0].id
 
         const newEvent: CreateEventArguments = {
-            name: "Mark's Birthday",
+            name: 'Mark's Birthday',
             dateAndTime: new Date('12/22/2022'),
-            description: "Mark is having people over his place for BBQ",
+            description: 'Mark is having people over his place for BBQ',
             organizationId,
         }
         const eventResult = await server.executeOperation({
@@ -76,7 +76,7 @@ describe('All Resolvers', () => {
 
         const event: EventType = eventResult.data?.createEvent
         expect(eventResult.errors).toBe(undefined)
-        expect(event.name).toBe("Mark's Birthday")
+        expect(event.name).toBe('Mark's Birthday')
 
     })
 
@@ -90,7 +90,7 @@ describe('All Resolvers', () => {
 
         const event: EventType = results.data?.event
         expect(results.errors).toBe(undefined)
-        expect(event.name).toBe("Expunge User Data")
+        expect(event.name).toBe('Expunge User Data')
     })
 
     it('Fetch Events By Ids', async () => {
@@ -108,7 +108,7 @@ describe('All Resolvers', () => {
         expect(events).toHaveLength(1)
     })
 
-    it("Fetch All Events", async () => {
+    it('Fetch All Events', async () => {
         expect.assertions(2)
 
         const findResults = await server.executeOperation({
@@ -123,14 +123,14 @@ describe('All Resolvers', () => {
     })
 
 
-    it("Updates an Event", async () => {
+    it('Updates an Event', async () => {
         expect.assertions(2)
 
         const updateEvent: UpdateEventArguments = {
             id: eventId,
-            name: "Not Expunging Data",
+            name: 'Not Expunging Data',
             dateAndTime: new Date('12/18/2021'),
-            description: "We're not expunging data! Just cleaning up house",
+            description: 'We're not expunging data! Just cleaning up house',
         }
         const updateResult = await server.executeOperation({
             query: EventQueries.UPDATE_EVENT,
@@ -140,16 +140,16 @@ describe('All Resolvers', () => {
         const event: EventType = updateResult.data?.updateEvent
 
         expect(updateResult.errors).toBe(undefined)
-        expect(event.name).toBe("Not Expunging Data")
+        expect(event.name).toBe('Not Expunging Data')
     })
 
-    it("Partially Updates an Event", async () => {
+    it('Partially Updates an Event', async () => {
         expect.assertions(4)
 
         const updateEvent: UpdateEventArguments = {
             id: eventId,
-            name: "Okay we're Expunging Data",
-            description: "You caught us, we're deleting our data :(",
+            name: 'Okay we're Expunging Data',
+            description: 'You caught us, we're deleting our data: (',
         }
         const updateResult = await server.executeOperation({
             query: EventQueries.UPDATE_EVENT,
@@ -160,7 +160,7 @@ describe('All Resolvers', () => {
 
         const updateEvent2: UpdateEventArguments = {
             id: eventId,
-            name: "Expunge Data Party",
+            name: 'Expunge Data Party',
         }
 
         const updateResult2 = await server.executeOperation({
@@ -171,22 +171,22 @@ describe('All Resolvers', () => {
         const event2: EventType = updateResult2.data?.updateEvent
 
         expect(updateResult.errors).toBe(undefined)
-        expect(event.name).toBe("Okay we're Expunging Data")
+        expect(event.name).toBe('Okay we're Expunging Data')
 
         expect(updateResult2.errors).toBe(undefined)
-        expect(event2.name).toBe("Expunge Data Party")
+        expect(event2.name).toBe('Expunge Data Party')
 
     })
 
-    it("Creates and Deletes an Event", async () => {
+    it('Creates and Deletes an Event', async () => {
         const expectedResult = {
             success: true
         }
 
         const createEvent: CreateEventArguments = {
-            name: "Stockholder Meeting",
+            name: 'Stockholder Meeting',
             dateAndTime: new Date('11/11/2021'),
-            description: "Gathering all of the stockholders in order to talk about the company's future",
+            description: 'Gathering all of the stockholders in order to talk about the company's future',
             organizationId,
         }
 
