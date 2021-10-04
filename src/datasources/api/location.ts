@@ -79,7 +79,6 @@ export default class Location {
             } catch (e) {
                 return { message: 'Error in updating location' }
             } finally {
-                console.log("Finally of location geocode")
                 if (!r) {
                     return { message: `Location:${updateLocationObject.address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
                 }

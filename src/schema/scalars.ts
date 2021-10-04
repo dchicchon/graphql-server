@@ -5,7 +5,7 @@ export module Scalars {
         name: 'Date',
         description: 'Date custom scalar type',
         serialize(value: Date) {
-            return value.getTime(); // Convert outgoing Date to integer for JSON
+            return value; // Convert outgoing Date to integer for JSON
         },
         parseValue(value: Date) {
             return new Date(value); // Convert incoming integer to Date
