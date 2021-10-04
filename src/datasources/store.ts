@@ -1,4 +1,5 @@
-import { Sequelize, DataTypes } from 'sequelize'
+import { Sequelize, DataTypes, Model, ModelCtor } from 'sequelize'
+import { OrganizationType } from '../interfaces/OrganizationTypes';
 
 export const createStore = () => {
   const db = new Sequelize({
@@ -7,13 +8,11 @@ export const createStore = () => {
     storage: './storage.sqlite',
   });
 
-  // Make tables here for our database
-  const organization = db.define('organization', {
+  const organization: ModelCtor<Model> = db.define('organization', {
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          // args: true,
           msg: 'Name Required'
         },
         len: {
@@ -81,7 +80,7 @@ export const createStore = () => {
   });
 
   db.authenticate();
-  db.sync(); // sync the models with our databse
+  db.sync();
   return { db, organization, location, event };
 }
 
@@ -98,7 +97,6 @@ export const createTestStore = () => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          // args: true,
           msg: 'Name Required'
         },
         len: {
@@ -166,6 +164,6 @@ export const createTestStore = () => {
   });
 
   db.authenticate();
-  db.sync(); // sync the models with our databse
+  db.sync();
   return { db, organization, location, event };
 }

@@ -1,32 +1,27 @@
 
 import { Client } from '@googlemaps/google-maps-services-js'
+import { ModelCtor, Model } from 'sequelize/types'
 // import { Arguments, CreateLocationArguments, UpdateObject } from '../../interfaces/Types'
 import { CreateLocationArguments, FindLocationArguments, UpdateLocationArguments, DeleteLocationArguments } from '../../interfaces/LocationTypes'
 export default class Location {
     location
-    constructor(location: any) {
+    constructor(location: ModelCtor<Model>) {
         this.location = location
     }
     async createLocation({ name, address, organizationId }: CreateLocationArguments) {
-        // console.log('Creating Location API')
-        // console.log(name, address, organizationId)
         const client = new Client()
-        // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator
         const key: string = process.env.GOOGLE_MAPS_API_KEY! // fix this later somehow
         let r;
         try {
-            // console.log('Getting Geocode')
             r = await client.geocode({
                 params: {
                     address: address,
                     key: key
                 },
-                timeout: 3000 // milliseconds
+                timeout: 3000
             })
         } catch (e) {
-            // console.log('Error in making location')
             return { message: 'Error in creating location' }
-            // return { message: e.response.data.error_message }
         } finally {
             if (!r) {
                 return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
@@ -41,15 +36,12 @@ export default class Location {
                     organizationId,
                 },
             });
-            // console.log(location)
-            return location.dataValues
-            // return created ? location.dataValues : { message: 'Location Already Created' }
+            return location;
         }
 
     }
     async getLocation({ id }: FindLocationArguments) {
         const location = await this.location.findOne({ where: { id } });
-        // console.log(location);
         return location;
     }
     async getLocations({ ids }: FindLocationArguments) {
@@ -72,7 +64,6 @@ export default class Location {
 
     async updateLocation({ id, name, address }: UpdateLocationArguments) {
         if (address) {
-            // console.log('Getting New latitude and longitude')
             const client = new Client()
             let r
             const key: string = process.env.GOOGLE_MAPS_API_KEY!
@@ -82,12 +73,11 @@ export default class Location {
                         address,
                         key
                     },
-                    timeout: 3000 // milliseconds
+                    timeout: 3000
                 })
 
             } catch (e) {
                 return { message: 'Error in updating location' }
-                // return { message: e.response.data.error_message }
             } finally {
                 if (!r) {
                     return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
@@ -99,18 +89,17 @@ export default class Location {
                 updateObject.address = address
                 updateObject.latitude = lat
                 updateObject.longitude = lng
-                const results = await this.location.update(updateObject, {
+                await this.location.update(updateObject, {
                     where: {
                         id
                     }
                 });
 
-                // now find this new location and return it
                 const findResults = await this.getLocation({ id })
                 return findResults
             }
         } else {
-            const results = await this.location.update({
+            await this.location.update({
                 name,
             }, {
                 where: {
@@ -130,9 +119,7 @@ export default class Location {
     }
 
     async deleteLocationByOrganizationId({ organizationId }: DeleteLocationArguments) {
-        // console.log('Delete Location in API by organizationId')
         const deleteResult = await this.location.destroy({ where: { organizationId } })
-        // console.log(deleteResult)
         return deleteResult
 
     }

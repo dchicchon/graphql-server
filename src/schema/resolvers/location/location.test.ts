@@ -124,7 +124,7 @@ describe('resolvers', () => {
 
     })
 
-    it('Updates a Location's name', async () => {
+    it('Updates a Locations name', async () => {
 
         expect.assertions(2)
 
@@ -142,7 +142,7 @@ describe('resolvers', () => {
     expect(location.name).toBe('Twitter Resort')
 })
 
-it('Update's a Location's address', async () => {
+it('Updates a Locations address', async () => {
     expect.assertions(2)
 
     const updateLocation: UpdateLocationArguments = {

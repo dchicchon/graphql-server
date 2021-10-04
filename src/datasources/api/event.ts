@@ -1,22 +1,17 @@
 
-import { Arguments, } from '../../interfaces/Types'
 import { CreateEventArguments, FindEventArguments, UpdateEventArguments, DeleteEventArguments } from '../../interfaces/EventTypes';
+import { Model, ModelCtor } from 'sequelize/types';
 export default class Event {
     event
-    constructor(event: any) {
+    constructor(event: ModelCtor<Model>) {
         this.event = event
     }
 
-    // =========================
-    // CREATE
-    // =========================
-
     async createEvent({ name, dateAndTime, description, organizationId }: CreateEventArguments) {
-        // console.log('Creating Event')
         const [event, created] = await this.event.findOrCreate({
             where: { name, dateAndTime: dateAndTime, description, organizationId },
         });
-        return event.dataValues
+        return event;
     }
 
 
@@ -48,24 +43,17 @@ export default class Event {
         });
         return events;
     }
-    // END CREATE
-
-    // =========================
-    // UPDATE
-    // =========================
     async updateEvent({ id, name, dateAndTime, description }: UpdateEventArguments) {
-        // console.log('Update Event')
         const updateObject: any = {}
         if (name) updateObject.name = name;
         if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
         if (description) updateObject.description = description
-        const updateResults = await this.event.update(updateObject,
+        await this.event.update(updateObject,
             {
                 where: {
                     id
                 }
             });
-        // Maybe do a quick find event to return 
         const findResults = await this.getEvent({ id })
         return findResults
     }

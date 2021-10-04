@@ -6,8 +6,8 @@ export interface Arguments {
     name?: string,
 }
 
-export interface DataSourceParent {
-    dataSources: any
+export interface Context {
+    dataSources: DataSources
 }
 
 export interface Error {

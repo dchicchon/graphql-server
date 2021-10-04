@@ -7,5 +7,5 @@ config();
 const server: ApolloServer = createServer();
 
 server.listen().then(({ url }) => {
-    console.info('Server started at:', url)
+  console.info('Server started at:', url);
 });
