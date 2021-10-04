@@ -43,18 +43,14 @@ export default class Event {
         });
         return events;
     }
-    async updateEvent({ id, name, dateAndTime, description }: UpdateEventArguments) {
-        const updateObject: any = {}
-        if (name) updateObject.name = name;
-        if (dateAndTime) updateObject.dateAndTime = new Date(dateAndTime)
-        if (description) updateObject.description = description
-        await this.event.update(updateObject,
+    async updateEvent(updateEventObject: UpdateEventArguments) {
+        await this.event.update(updateEventObject,
             {
                 where: {
-                    id
+                    id: updateEventObject.id
                 }
             });
-        const findResults = await this.getEvent({ id })
+        const findResults = await this.getEvent({ id: updateEventObject.id })
         return findResults
     }
 

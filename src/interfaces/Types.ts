@@ -1,3 +1,4 @@
+import { Model, ModelCtor } from 'sequelize/types';
 import API from '../datasources/api'
 
 export interface Arguments {
@@ -11,13 +12,13 @@ export interface Context {
 }
 
 export interface Error {
-    response: any | unknown
+    response: string | unknown
 }
 
 export interface Store {
-    organization: any,
-    event: any,
-    location: any
+    organization: ModelCtor<Model>,
+    event: ModelCtor<Model>,
+    location: ModelCtor<Model>
 }
 
 export interface DataSources {

@@ -96,7 +96,7 @@ describe('resolvers', () => {
         })
 
         const allLocations: Array<LocationType> = findAllResults.data?.allLocations
-        const locationIds: Array<number> = allLocations.map((location: any) => location.id)
+        const locationIds: Array<number> = allLocations.map((location: LocationType) => location.id)
 
         const findLocations: FindLocationArguments = { ids: locationIds }
         const findResults = await server.executeOperation({
@@ -129,53 +129,53 @@ describe('resolvers', () => {
         expect.assertions(2)
 
         const updateLocation: UpdateLocationArguments = {
-        name: 'Twitter Resort',
-        id: locationId,
-    }
-    const updateResult = await server.executeOperation({
-        query: LocationQueries.UPDATE_LOCATION,
-        variables: updateLocation
+            name: 'Twitter Resort',
+            id: locationId,
+        }
+        const updateResult = await server.executeOperation({
+            query: LocationQueries.UPDATE_LOCATION,
+            variables: updateLocation
+        })
+
+        const location: LocationType = updateResult.data?.updateLocation
+        expect(updateResult.errors).toBe(undefined)
+        expect(location.name).toBe('Twitter Resort')
     })
 
-    const location: LocationType = updateResult.data?.updateLocation
-    expect(updateResult.errors).toBe(undefined)
-    expect(location.name).toBe('Twitter Resort')
-})
+    it('Updates a Locations address', async () => {
+        expect.assertions(2)
 
-it('Updates a Locations address', async () => {
-    expect.assertions(2)
+        const updateLocation: UpdateLocationArguments = {
+            address: 'Lanai Ave, Lanai City, HI 96763',
+            id: locationId,
+        }
 
-    const updateLocation: UpdateLocationArguments = {
-        address: 'Lanai Ave, Lanai City, HI 96763',
-        id: locationId,
-    }
+        const updateResult = await server.executeOperation({
+            query: LocationQueries.UPDATE_LOCATION,
+            variables: updateLocation
+        })
 
-    const updateResult = await server.executeOperation({
-        query: LocationQueries.UPDATE_LOCATION,
-        variables: updateLocation
+        const location: LocationType = updateResult.data?.updateLocation
+
+        expect(updateResult.errors).toBe(undefined)
+        expect(location.name).toBe('Twitter Resort')
     })
 
-    const location: LocationType = updateResult.data?.updateLocation
 
-    expect(updateResult.errors).toBe(undefined)
-    expect(location.name).toBe('Twitter Resort')
-})
+    it('Deletes a Location', async () => {
+        expect.assertions(2)
+        const expectedResult = {
+            success: true
+        }
+        // First find the first organization that shows up and use its id
 
+        const deleteLocation: DeleteLocationArguments = { id: locationId }
+        const deleteResult = await server.executeOperation({
+            query: LocationQueries.DELETE_LOCATION,
+            variables: deleteLocation
+        })
 
-it('Deletes a Location', async () => {
-    expect.assertions(2)
-    const expectedResult = {
-        success: true
-    }
-    // First find the first organization that shows up and use its id
-
-    const deleteLocation: DeleteLocationArguments = { id: locationId }
-    const deleteResult = await server.executeOperation({
-        query: LocationQueries.DELETE_LOCATION,
-        variables: deleteLocation
+        expect(deleteResult.errors).toBe(undefined)
+        expect(deleteResult.data?.deleteLocation).toEqual(expectedResult)
     })
-
-    expect(deleteResult.errors).toBe(undefined)
-    expect(deleteResult.data?.deleteLocation).toEqual(expectedResult)
-})
 })

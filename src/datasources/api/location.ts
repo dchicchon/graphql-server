@@ -62,53 +62,48 @@ export default class Location {
         return locations;
     }
 
-    async updateLocation({ id, name, address }: UpdateLocationArguments) {
-        if (address) {
+    async updateLocation(updateLocationObject: UpdateLocationArguments) {
+        if (updateLocationObject.address) {
             const client = new Client()
             let r
             const key: string = process.env.GOOGLE_MAPS_API_KEY!
             try {
                 r = await client.geocode({
                     params: {
-                        address,
+                        address: updateLocationObject.address,
                         key
                     },
-                    timeout: 3000
+                    timeout: 5000
                 })
 
             } catch (e) {
                 return { message: 'Error in updating location' }
             } finally {
+                console.log("Finally of location geocode")
                 if (!r) {
-                    return { message: `Location:${address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
+                    return { message: `Location:${updateLocationObject.address} was not found. Please check out the README.md or https://developers.google.com/maps/documentation/geocoding/overview in order to understand how to place a valid address ` }
                 }
                 let { lat, lng } = r.data.results[0].geometry.location
-
-                const updateObject: any = {}
-                if (name) updateObject.name = name;
-                updateObject.address = address
-                updateObject.latitude = lat
-                updateObject.longitude = lng
-                await this.location.update(updateObject, {
-                    where: {
-                        id
-                    }
-                });
-
-                const findResults = await this.getLocation({ id })
-                return findResults
+                updateLocationObject.latitude = lat
+                updateLocationObject.longitude = lng
             }
-        } else {
-            await this.location.update({
-                name,
-            }, {
-                where: {
-                    id
-                }
-            });
-            const findResults = await this.getLocation({ id })
-            return findResults
         }
+        let { latitude, longitude, name, address } = updateLocationObject
+        await this.location.update({
+            latitude,
+            longitude,
+            name,
+            address
+        }, {
+            where: {
+                id: updateLocationObject.id
+            }
+        });
+
+        const findResults = await this.getLocation({ id: updateLocationObject.id })
+        return findResults
+
+
 
 
 

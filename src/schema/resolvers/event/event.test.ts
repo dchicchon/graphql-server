@@ -7,8 +7,8 @@ import { CreateOrganizationArguments } from '../../../interfaces/OrganizationTyp
 
 describe('All Resolvers', () => {
     let server: ApolloServer;
-    let organizationId: any;
-    let eventId: any;
+    let organizationId: number;
+    let eventId: number;
 
     beforeAll(async () => {
         server = await createTestServer();

@@ -34,15 +34,15 @@ export default class Organization {
         return organizations;
     }
 
-    async updateOrganization({ id, name }: UpdateOrganizationArguments) {
+    async updateOrganization(updateOrganizationObject: UpdateOrganizationArguments) {
         const resultsArray = await this.organization.update(
-            { name },
+            updateOrganizationObject,
             {
                 where: {
-                    id
+                    id: updateOrganizationObject.id
                 }
             });
-        const resultFind = await this.getOrganization({ id })
+        const resultFind = await this.getOrganization({ id: updateOrganizationObject.id })
         return resultFind;
     }
 

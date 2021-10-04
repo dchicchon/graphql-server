@@ -1,19 +1,19 @@
-import { Context, } from '../../../interfaces/Types'
+import { Arguments, Context, } from '../../../interfaces/Types'
 import { CreateLocationArguments, DeleteLocationArguments, FindLocationArguments, LocationType, UpdateLocationArguments } from '../../../interfaces/LocationTypes'
 
-const location = async (_: any, { id }: FindLocationArguments, { dataSources }: Context) => {
+const location = async (_: undefined, { id }: FindLocationArguments, { dataSources }: Context) => {
     const result = await dataSources.api.location.getLocation({ id })
     return result
 }
-const locations = async (_: any, { ids }: FindLocationArguments, { dataSources }: Context) => {
+const locations = async (_: undefined, { ids }: FindLocationArguments, { dataSources }: Context) => {
     const result = await dataSources.api.location.getLocations({ ids })
     return result
 }
-const allLocations = async (_: any, __: any, { dataSources }: Context) => {
+const allLocations = async (_: undefined, __: undefined, { dataSources }: Context) => {
     const result = await dataSources.api.location.getAllLocations()
     return result
 }
-const createLocation = async (_: any, { name, address, organizationId }: CreateLocationArguments, { dataSources }: Context) => {
+const createLocation = async (_: undefined, { name, address, organizationId }: CreateLocationArguments, { dataSources }: Context) => {
     const results = await dataSources.api.location.createLocation({
         name,
         address,
@@ -23,12 +23,12 @@ const createLocation = async (_: any, { name, address, organizationId }: CreateL
 
 }
 
-const updateLocation = async (_: any, { id, name, address }: UpdateLocationArguments, { dataSources }: Context) => {
+const updateLocation = async (_: undefined, { id, name, address }: UpdateLocationArguments, { dataSources }: Context) => {
     const updateResult = await dataSources.api.location.updateLocation({ id, name, address });
     return updateResult
 }
 
-const deleteLocation = async (_: any, { id }: DeleteLocationArguments, { dataSources }: Context) => {
+const deleteLocation = async (_: undefined, { id }: DeleteLocationArguments, { dataSources }: Context) => {
     await dataSources.api.location.deleteLocation({ id });
 
     const findResult = await dataSources.api.location.getLocation({ id })
@@ -44,7 +44,7 @@ const deleteLocation = async (_: any, { id }: DeleteLocationArguments, { dataSou
 }
 
 const Location = {
-    organization: async ({ organizationId }: FindLocationArguments, _: any, { dataSources }: Context) => {
+    organization: async ({ organizationId }: FindLocationArguments, _: undefined, { dataSources }: Context) => {
         const results = await dataSources.api.organization.getOrganization({ id: organizationId })
         return results
     }
